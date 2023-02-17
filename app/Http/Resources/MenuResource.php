@@ -2,7 +2,8 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+
+use Carbon\Carbon;
 
 class MenuResource extends JsonResource
 {
@@ -22,8 +23,9 @@ class MenuResource extends JsonResource
             'openType' => $this -> open_type,
             'type' => $this -> type,
             'icon' => $this -> icon,
-            'created_at' => $this -> created_at,
-
+            'created_at' => Carbon::make($this -> created_at)->format('Y-m-d H:i:s'),
+            'status' => $this -> status,
         ];
     }
+
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-@include('admin.layouts.__header',['title'=>'新增'])
+@include('admin.layouts.__header',['title'=>'修改菜单'])
 <body>
 <form class="layui-form" action="">
     @include('admin.layouts.__errors')
@@ -10,12 +10,12 @@
                 <label class="layui-form-label">上级菜单</label>
                 <div class="layui-input-block">
                     <select name="parent_id" id="" lay-search="">
-                        <option value="">最上级</option>
+                        <option <?=$menu->parent_id==null?'selected':''?> value="">最上级</option>
                         @foreach($menusTree as $val)
-                            <option value="{{ $val->id }}">{{ $val->title }}</option>
+                            <option <?=$menu->parent_id==$val->id?'selected':''?>  <?=$menu->id==$val->id?'disabled':''?> value="{{ $val->id }}">{{ $val->title }}</option>
                             @if($val->children)
                                 @foreach($val->children as $child)
-                                    <option value="{{ $child->id }}">{{$child->title }}</option>
+                                    <option <?=$menu->parent_id==$child->id?'selected':''?> <?=$menu->id==$child->id?'disabled':''?> value="{{ $child->id }}">{{$child->title }}</option>
                                 @endforeach
                             @endif
                         @endforeach
@@ -25,7 +25,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">title</label>
                 <div class="layui-input-block">
-                    <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题"
+                    <input type="text" name="title" value="{{ old('title',$menu->title) }}" lay-verify="title" autocomplete="off" placeholder="请输入标题"
                            class="layui-input">
                 </div>
             </div>
@@ -41,8 +41,8 @@
                 <label class="layui-form-label">type(类型是否有子集)</label>
                 <div class="layui-input-block">
                     <select class="layui-form-select" name="type" id="">
-                        <option value="0">没有</option>
-                        <option value="1">有</option>
+                        <option <?=$menu->type==0?'selected':''?> value="0">没有</option>
+                        <option <?=$menu->type==1?'selected':''?> value="1">有</option>
                     </select>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                 <label class="layui-form-label">打开菜单跳转类型</label>
                 <div class="layui-input-block">
                     <select class="layui-form-select" name="open_type" id="">
-                        <option value="0">普通</option>
+                        <option value="_iframe">普通</option>
                         <option selected value="_iframe">弹出层</option>
                     </select>
                 </div>
@@ -58,7 +58,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">路由地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="href" lay-verify="href" autocomplete="off" placeholder="请输入路由地址"
+                    <input type="text" name="href" value="{{ $menu->href }}" lay-verify="href" autocomplete="off" placeholder="请输入路由地址"
                            class="layui-input">
                 </div>
             </div>
@@ -81,12 +81,10 @@
 </form>
 @include('admin.layouts.__footer')
 <script>
-    layui.use(['form', 'jquery', 'iconPicker', 'tree'], function () {
+    layui.use(['form', 'jquery','iconPicker'], function() {
         let form = layui.form;
         let $ = layui.jquery;
-        let tree = layui.tree;
-        let SAVE_PATH = '{{ route('admin.menus.store') }}';
-        var iconPicker = layui.iconPicker;
+        let iconPicker = layui.iconPicker;
 
         $.ajaxSetup({
             headers: {
@@ -118,23 +116,26 @@
             success: function (d) {
             }
         });
-
-        form.on('submit(user-save)', function (data) {
+        iconPicker.checkIcon('iconPicker', '{{ $menu->icon }}');
+        $('#iconPicker2').val('{{ $menu->icon }}');
+        form.on('submit(user-save)', function(data) {
+            console.log(data.field)
             $.ajax({
-                url: SAVE_PATH,
+                url: '{{ route('admin.menus.edit') }}'+`?id={{ $menu->id }}`,
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json',
                 type: 'post',
-                success: function (result) {
-                    console.log(result);
+                async:false,
+                success: function(result) {
                     if (result.success) {
                         layer.msg(result.msg, {
                             icon: 1,
                             time: 1000
-                        }, function () {
-                            parent.layer.close(parent.layer.getFrameIndex(window.name)); //关闭当前页
-                            table.reload('data-table');
+                        }, function() {
+                            parent.layer.close(parent.layer.getFrameIndex(window
+                                .name)); //关闭当前页
+                            parent.layui.table.reload("user-table");
                         });
                     } else {
                         layer.msg(result.msg, {
@@ -142,9 +143,6 @@
                             time: 1000
                         });
                     }
-                },
-                error: function (e) {
-                    layer.msg(JSON.parse(e.responseText).message)
                 }
             })
             return false;

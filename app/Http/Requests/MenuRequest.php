@@ -23,6 +23,9 @@ class MenuRequest extends FormRequest
      */
     public function rules()
     {
+        if ($this -> ajax()) {
+            return [];
+        }
         switch ($this -> method()) {
             case 'POST':
                 return [

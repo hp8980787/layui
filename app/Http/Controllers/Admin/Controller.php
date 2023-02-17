@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller as BaseController;
+use App\Http\Resources\DataCollection;
 
 class Controller extends BaseController
 {
@@ -13,14 +14,21 @@ class Controller extends BaseController
         $this -> model -> create($data);
     }
 
-    public function responseSuccess( $data = null,string $message = 'ok',  int $count = 0, string $code = '0')
+    public function responseSuccess($data = null, string $message = 'ok', int $count = 0, string $code = '0')
     {
-        return response([
-            'msg' => $message,
+        if ($data != null && gettype($data) != 'string') {
+            return $data -> additional([
+                'msg' => $message,
+                'success' => true,
+                'code' => '0',
+            ]);
+        }
+        return [
             'data' => $data,
-            'count' => $count,
+            'msg' => $message,
             'success' => true,
             'code' => '0',
-        ], 200);
+        ];
+
     }
 }

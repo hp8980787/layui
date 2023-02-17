@@ -14,9 +14,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 use App\Http\Controllers\Admin as C;
-Route::get('/', function () {
+
+Route ::get('/', function () {
     return view('index');
 });
-Route::prefix('admin')->as('admin.')->middleware(['admin.locale'])->group(function (){
-   Route::resource('menus',C\MenuController::class)->except('show');
+Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group(function () {
+    Route ::name('menus.') -> group(function () {
+        Route ::post('api/menus', [C\MenuController::class, 'index']) -> name('api');
+        Route ::get('menus', [C\MenuController::class, 'index']) -> name('index');
+        Route ::get('menus/create', [C\MenuController::class, 'create']) -> name('create');
+        Route ::post('menus', [C\MenuController::class, 'store']) -> name('store');
+        Route ::match(['get','post'],'menus/edit', [C\MenuController::class, 'edit']) -> name('edit');
+        Route::delete('menus/delete',[C\MenuController::class,'destroy'])->name('destroy');
+    });
+
+
 });
