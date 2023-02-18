@@ -34,12 +34,12 @@ class MenuController extends Controller
                 Menu ::query() -> withTrashed() -> whereIn('id', is_array($id) ? $id : [$id]) -> restore();
             }
             $data = QueryBuilder ::for(Menu::class)
-                -> defaultSort('id')
-               ->allowedSorts(['id'])
+                -> defaultSort('-id')
+                -> allowedSorts(['id'])
                 -> allowedFilters([
                     AllowedFilter ::trashed(),
-                   'title'
-                    ]) -> paginate($perPage);
+                    'title',
+                ]) -> paginate($perPage);
             return $this -> responseSuccess(MenuResource ::forCollection($data));
         }
         $trashCount = Menu ::onlyTrashed() -> count();

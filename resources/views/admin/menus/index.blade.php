@@ -242,7 +242,7 @@
         //排序
         table.on('sort(user-table)', function (obj) {
             let name = obj.field;
-            window.where.filter[name] = obj.type === 'desc' ? '-' + name : name;
+            window.where[name] = obj.type;
             table.reload('user-table',{
                 where:window.where
             })
