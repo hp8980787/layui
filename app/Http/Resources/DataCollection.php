@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 class DataCollection extends ResourceCollection
 {
 
-    public function __construct($resource,protected $class)
+    public function __construct($resource, protected $class)
     {
 
         parent ::__construct($resource);
@@ -23,9 +23,9 @@ class DataCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => $this->class::collection($this -> collection),
-            'count' => 3,
-            'total' => $this -> total(),
+            'data' => $this -> class ::collection($this -> collection),
+
+            'count' => $this -> total(),
         ];
     }
 }

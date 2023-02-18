@@ -41,8 +41,8 @@
                 <label class="layui-form-label">type(类型是否有子集)</label>
                 <div class="layui-input-block">
                     <select class="layui-form-select" name="type" id="">
-                        <option value="0">没有</option>
-                        <option value="1">有</option>
+                        <option value="0">目录</option>
+                        <option value="1">菜单</option>
                     </select>
                 </div>
             </div>

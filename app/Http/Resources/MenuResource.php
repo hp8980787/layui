@@ -20,10 +20,11 @@ class MenuResource extends JsonResource
             'id' => $this -> id,
             'parent_id' => $this -> parent_id,
             'title' => $this -> title,
+            'href' => $this -> getRawOriginal('href'),
             'openType' => $this -> open_type,
             'type' => $this -> type,
             'icon' => $this -> icon,
-            'created_at' => Carbon::make($this -> created_at)->format('Y-m-d H:i:s'),
+            'created_at' => Carbon ::make($this -> created_at) -> format('Y-m-d H:i:s'),
             'status' => $this -> status,
         ];
     }

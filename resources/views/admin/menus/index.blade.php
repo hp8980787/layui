@@ -114,9 +114,10 @@
         let API_PATH = '{{ route('admin.menus.api') }}'
         let EDIT_PATH = '{{ route('admin.menus.edit') }}'
         let cols = [
-            [{
-                type: 'checkbox'
-            },
+            [
+                {
+                    type: 'checkbox'
+                },
                 {
                     title: 'id',
                     field: 'id',
@@ -139,10 +140,17 @@
                     }
                 },
                 {
-                    title: '是否有子集',
+                    title: '类型',
                     field: 'type',
-                    align: 'center'
-                },
+                    align: 'center',
+                    templet: function (d) {
+                        return d.type == 0 ? `<span><i class="layui-icon layui-icon-template-1"></i>目录</span>` :
+                            `<span><i class="layui-icon layui-icon-website">菜单</span>`;
+                    }
+                }, {
+                title: '网址',
+                field: 'href'
+            },
                 {
                     title: '状态',
                     field: 'status',
@@ -243,8 +251,8 @@
         table.on('sort(user-table)', function (obj) {
             let name = obj.field;
             window.where[name] = obj.type;
-            table.reload('user-table',{
-                where:window.where
+            table.reload('user-table', {
+                where: window.where
             })
         })
 

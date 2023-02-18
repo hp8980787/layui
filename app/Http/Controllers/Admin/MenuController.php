@@ -86,7 +86,7 @@ class MenuController extends Controller
             return $this -> responseSuccess('成功!');
         }
         $menu = Menu ::query() -> findOrFail($id);
-        $menusTree = $this -> getDataTree();
+        $menusTree = $this -> getDataTree(null,0,'--');
         return view('admin.menus.edit', compact('menu', 'menusTree'));
     }
 
@@ -110,4 +110,13 @@ class MenuController extends Controller
         return $this -> responseSuccess('删除成功!');
     }
 
+    /**
+     *所有后台
+     *
+     **/
+    public function all()
+    {
+        $menus = $this->getDataTree(null,0,'');
+        return response($menus);
+    }
 }

@@ -102,8 +102,8 @@
         var popup = layui.popup;
 
         admin.setConfigType("yml");
-        admin.setConfigPath("config/pear.config.yml");
-
+        admin.setConfigPath("./config/pear.config.yml");
+        // parent.layui.admin.refreshThis()
         admin.render();
 
         // 登出逻辑

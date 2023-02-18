@@ -1,7 +1,7 @@
 ## 网站配置
 logo:
   ## 网站名称
-  title: "后台管理"
+  title: "Pear Admin"
   ## 网站图标
   image: "admin/images/logo.png"
 ## 菜单配置
@@ -19,7 +19,7 @@ menu:
   ## 顶部菜单宽度 PX
   controlWidth: 500
   ## 默认选中的菜单项
-  select: "1"
+  select: "10"
   ## 是否开启异步菜单，false 时 data 属性设置为静态数据，true 时为后端接口
   async: true
 ## 视图内容配置
@@ -31,7 +31,7 @@ tab:
   ## 开启选项卡记忆
   session: true
   ## 浏览器刷新时是否预加载非激活标签页
-  preload: false
+  preload: true
   ## 可打开的数量, false 不限制极值
   max: "30"
   ## 首页
