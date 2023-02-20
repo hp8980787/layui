@@ -62,7 +62,6 @@
                            class="layui-input">
                 </div>
             </div>
-
         </div>
     </div>
     <div class="bottom">
