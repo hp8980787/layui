@@ -1,28 +1,40 @@
 <!doctype html>
 <html lang="zh_CN">
-@include('admin.layouts.__header',['title'=>'新增用户'])
+@include('admin.layouts.__header',['title'=>'修改用户'])
 <body>
 <form action="" class="layui-form">
     @include('admin.layouts.__errors')
     <div class="mainBox">
         <div class="main-container">
+            <div class="layui-form-item">
+                <label class="layui-form-label">头像</label>
+                <div class="layui-input-block">
+                    <input type="hidden" name="avatar">
+                    <button type="button" class="layui-btn" id="avatar">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                </div>
+            </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">用户名:</label>
                 <div class="layui-input-block">
-                    <input type="text" name="name" lay-verify="required|name" placeholder="请填写用户名" class="layui-input">
+                    <input type="text" name="name" lay-verify="required|name" value="{{ $user->name }}" disabled placeholder="请填写用户名"
+                           class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">昵称:</label>
                 <div class="layui-input-block">
-                    <input type="text" name="nickname" lay-verify="required|name" placeholder="请填写name" class="layui-input">
+                    <input type="text" name="nickname" value="{{ $user->nickname }}" lay-verify="required|name" placeholder="请填写name"
+                           class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">email:</label>
                 <div class="layui-input-block">
-                    <input type="email" name="email" lay-verify="required|email" placeholder="email" class="layui-input">
+                    <input type="email" name="email" disabled value="{{ $user->email }}" lay-verify="required|email" placeholder="email"
+                           class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -46,20 +58,37 @@
                 <i class="layui-icon layui-icon-ok"></i>
                 提交
             </button>
-            <button type="reset" class="pear-btn pear-btn-sm">
-                <i class="layui-icon layui-icon-refresh"></i>
-                重置
-            </button>
+
         </div>
     </div>
 </form>
 @include('admin.layouts.__footer')
 <script>
-    layui.use(['form', 'jquery'], function () {
+    layui.use(['form', 'jquery', 'upload'], function () {
         let form = layui.form;
         let $ = layui.jquery;
         let upload = layui.upload;
         let CREATE_PATH = '{{ route('admin.users.store') }}'
+        upload.render({
+            elem: '#avatar',
+            exts:'jpg|png|gif|bmp|jpeg',
+            type: 'post',
+            dataType: 'json',
+            contentType:'application/json',
+            data: {
+                'model_type': 'user',
+                'model_id': '{{ auth()->user()->id }}'
+            },
+            url: '{{ route('admin.files.upload') }}',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }, done: function (res) {
+                $('input[name="avatar"]').val(res.data)
+                layer.msg('上传成功!');
+            }, error: function (error) {
+
+            }
+        })
         form.verify({
             name: function (value, item) {
                 if (value.length < 2 || value.length > 12) {

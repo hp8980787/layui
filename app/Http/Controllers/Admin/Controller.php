@@ -31,4 +31,14 @@ class Controller extends BaseController
         ];
 
     }
+
+    public function responseFail(string $message = 'error')
+    {
+        return [
+
+            'msg' => $message,
+            'success' => false,
+            'code' => '500',
+        ];
+    }
 }

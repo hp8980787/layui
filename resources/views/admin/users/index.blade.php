@@ -78,7 +78,7 @@
             },
                 {
                     title: '账号',
-                    field: 'username',
+                    field: 'name',
                     align: 'center',
                     width: 100
                 },

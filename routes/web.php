@@ -20,18 +20,27 @@ Route ::get('/', function () {
 });
 Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group(function () {
 
-    Route ::name('menus.') -> group(function () {
-        Route ::post('api/menus', [C\MenuController::class, 'index']) -> name('api');
-        Route ::get('menus', [C\MenuController::class, 'index']) -> name('index');
-        Route ::get('menus/create', [C\MenuController::class, 'create']) -> name('create');
-        Route ::post('menus', [C\MenuController::class, 'store']) -> name('store');
-        Route ::match(['get', 'post'], 'menus/edit', [C\MenuController::class, 'edit']) -> name('edit');
-        Route ::delete('menus/delete', [C\MenuController::class, 'destroy']) -> name('destroy');
-        Route ::get('menus-all', [C\MenuController::class, 'all']) -> name('all');
-    });
-    Route ::name('users.') -> group(function () {
-        Route::any('users',[C\UserController::class ,'index'])->name('index');
-        Route::any('users/create',[C\UserController::class ,'create'])->name('create');
+    Route ::any('users/login', [C\UserController::class, 'login']) -> name('users.login');
+    Route ::middleware(['auth']) -> group(function () {
+        Route ::get('/dashboard', [C\DashboardController::class, 'index'])->name('/');
+        Route ::name('menus.') -> group(function () {
+            Route ::post('api/menus', [C\MenuController::class, 'index']) -> name('api');
+            Route ::get('menus', [C\MenuController::class, 'index']) -> name('index');
+            Route ::get('menus/create', [C\MenuController::class, 'create']) -> name('create');
+            Route ::post('menus', [C\MenuController::class, 'store']) -> name('store');
+            Route ::match(['get', 'post'], 'menus/edit', [C\MenuController::class, 'edit']) -> name('edit');
+            Route ::delete('menus/delete', [C\MenuController::class, 'destroy']) -> name('destroy');
+            Route ::get('menus-all', [C\MenuController::class, 'all']) -> name('all');
+        });
+        Route ::name('users.') -> group(function () {
+            Route ::any('users', [C\UserController::class, 'index']) -> name('index');
+            Route ::any('users/create', [C\UserController::class, 'create']) -> name('create');
+            Route ::post('users/store', [C\UserController::class, 'store']) -> name('store');
+            Route ::get('users/{id}/edit', [C\UserController::class, 'edit']) -> name('edit');
+            Route ::get('users/logout', [C\UserController::class, 'logout']) -> name('logout');
+        });
+
+        Route ::post('upload-files', [C\FileController::class, 'upload']) -> name('files.upload');
     });
 
 

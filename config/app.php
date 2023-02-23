@@ -185,7 +185,7 @@ return [
         /*
          * Package Service Providers...
          */
-
+        'Mews\Captcha\CaptchaServiceProvider',
         /*
          * Application Service Providers...
          */

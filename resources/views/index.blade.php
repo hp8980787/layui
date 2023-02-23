@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>主页</title>
     <!-- 依 赖 样 式 -->
-    <link rel="stylesheet" href="component/pear/css/pear.css" />
+    <link rel="stylesheet" href="/component/pear/css/pear.css"/>
     <!-- 加 载 样 式 -->
-    <link rel="stylesheet" href="admin/css/loader.css" />
+    <link rel="stylesheet" href="/admin/css/loader.css"/>
     <!-- 布 局 样 式 -->
-    <link rel="stylesheet" href="admin/css/admin.css" />
+    <link rel="stylesheet" href="/admin/css/admin.css"/>
 </head>
 <!-- 结 构 代 码 -->
 <body class="layui-layout-body pear-admin">
@@ -27,7 +27,7 @@
         <!-- 顶 部 左 侧 功 能 -->
         <ul class="layui-nav layui-layout-left">
             <li class="collapse layui-nav-item"><a href="#" class="layui-icon layui-icon-shrink-right"></a></li>
-            <li class="refresh layui-nav-item"><a href="#" class="layui-icon layui-icon-refresh-1" loading = 600></a></li>
+            <li class="refresh layui-nav-item"><a href="#" class="layui-icon layui-icon-refresh-1" loading=600></a></li>
         </ul>
         <!-- 多 系 统 菜 单 -->
         <div id="control" class="layui-layout-control"></div>
@@ -42,8 +42,8 @@
                 <a class="layui-icon layui-icon-username" href="javascript:;"></a>
                 <!-- 功 能 菜 单 -->
                 <dl class="layui-nav-child">
-                    <dd><a user-menu-url="view/system/person.html" user-menu-id="5555" user-menu-title="基本资料">基本资料</a></dd>
-                    <dd><a href="javascript:void(0);" class="logout">注销登录</a></dd>
+                    <dd><a class="userInfo" user-menu-title="基本资料">基本资料</a></dd>
+                    <dd><a href="{{ route('admin.users.logout') }}" class="logout">注销登录</a></dd>
                 </dl>
             </li>
             <!-- 主 题 配 置 -->
@@ -92,23 +92,24 @@
     <a href="#" class="layui-icon layui-icon-shrink-right"></a>
 </div>
 <!-- 依 赖 脚 本 -->
-<script src="component/layui/layui.js"></script>
-<script src="component/pear/pear.js"></script>
+<script src="/component/layui/layui.js"></script>
+<script src="/component/pear/pear.js"></script>
 <!-- 框 架 初 始 化 -->
 <script>
-    layui.use(['admin','jquery','popup','drawer'], function() {
+
+    layui.use(['admin', 'jquery', 'popup', 'drawer', 'common'], function () {
         var $ = layui.jquery;
         var admin = layui.admin;
         var popup = layui.popup;
-
+        var common = layui.common;
         admin.setConfigType("yml");
-        admin.setConfigPath("./config/pear.config.yml");
+        admin.setConfigPath("/config/pear.config.yml");
         // parent.layui.admin.refreshThis()
         admin.render();
 
         // 登出逻辑
-        admin.logout(function(){
-            popup.success("注销成功",function(){
+        admin.logout(function () {
+            popup.success("注销成功", function () {
                 location.href = "login.html";
             })
             // 注销逻辑 返回 true / false
@@ -116,7 +117,17 @@
         })
 
         // 消息点击回调
-        admin.message(function(id, title, context, form) {});
+        admin.message(function (id, title, context, form) {});
+        $('.userInfo').on('click', function () {
+            layer.open({
+                type: 2,
+                title: '新增',
+                shade: 0.1,
+                area: [common.isModile() ? '100%' : '500px', common.isModile() ? '100%' : '400px'],
+                content: '{{ route('admin.users.edit',['id'=>auth()->user()->id]) }}'
+            });
+        })
+
     })
 </script>
 </body>
