@@ -69,9 +69,10 @@
         let $ = layui.jquery;
         let common = layui.common;
 
-        let MODULE_PATH = "operate/";
         let INDEX_PATH = '{{ route('admin.users.index') }}';
         let CREATE_PATH = '{{ route('admin.users.create') }}'
+        let EDIT_PATH = '{{ route('admin.users.edit',['id'=>auth()->user()->id]) }}';
+        let DELETE_PATH = '{{ route('admin.users.destroy',['id'=>auth()->user()->id]) }}';
         let cols = [
             [{
                 type: 'checkbox'
@@ -165,7 +166,7 @@
                 title: '修改',
                 shade: 0.1,
                 area: ['500px', '400px'],
-                content: MODULE_PATH + 'edit.html'
+                content: EDIT_PATH
             });
         }
 
@@ -176,33 +177,15 @@
             }, function (index) {
                 layer.close(index);
                 let loading = layer.load();
-                $.ajax({
-                    url: MODULE_PATH + "remove/" + obj.data['userId'],
-                    dataType: 'json',
-                    type: 'delete',
-                    success: function (result) {
-                        layer.close(loading);
-                        if (result.success) {
-                            layer.msg(result.msg, {
-                                icon: 1,
-                                time: 1000
-                            }, function () {
-                                obj.del();
-                            });
-                        } else {
-                            layer.msg(result.msg, {
-                                icon: 2,
-                                time: 1000
-                            });
-                        }
-                    }
-                })
+                console.log(obj)
+                userRemove(obj.data.id);
+                layer.close(loading);
             });
         }
 
         window.batchRemove = function (obj) {
 
-            var checkIds = common.checkField(obj, 'userId');
+            var checkIds = common.checkField(obj, 'id');
 
             if (checkIds === "") {
                 layer.msg("未选中数据", {
@@ -218,30 +201,42 @@
             }, function (index) {
                 layer.close(index);
                 let loading = layer.load();
-                $.ajax({
-                    url: MODULE_PATH + "batchRemove/" + ids,
-                    dataType: 'json',
-                    type: 'delete',
-                    success: function (result) {
-                        layer.close(loading);
-                        if (result.success) {
-                            layer.msg(result.msg, {
-                                icon: 1,
-                                time: 1000
-                            }, function () {
-                                table.reload('user-table');
-                            });
-                        } else {
-                            layer.msg(result.msg, {
-                                icon: 2,
-                                time: 1000
-                            });
-                        }
-                    }
-                })
+                console.log(checkIds);
+                userRemove(checkIds);
+                layer.close(loading);
             });
         }
 
+        let userRemove = function (id) {
+            $.ajax({
+                url: DELETE_PATH,
+                type: 'delete',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                contentType: 'application/json',
+                dataType: 'json',
+                data: {
+                    id: id,
+                },
+                success: function (res) {
+                    if (res.success) {
+                        layer.msg('删除成功!', {
+                            icon: 1,
+                            time: 1000
+                        })
+
+                    } else {
+                        layer.msg(res.msg, {
+                            icon: 2,
+                            time: 1000
+                        });
+                    }
+                    table.reload('user-table');
+                }, error: function (error) {
+                }
+            })
+        }
         window.refresh = function (param) {
             table.reload('user-table');
         }

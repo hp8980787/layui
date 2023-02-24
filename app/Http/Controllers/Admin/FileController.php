@@ -24,8 +24,10 @@ class FileController extends Controller
             Storage ::disk('upload') -> delete($fileData -> name);
             $path = $file -> storeAs('upload', $name);
             $fileData -> name = $name;
-            $fileData -> path = Storage ::url($path);
+            $fileData -> path = $path;
             $fileData -> extension = $file -> extension();
+            $fileData -> model_id = $modelId;
+            $fileData -> model_type = $modelType;
             $fileData -> save();
         } else {
             $path = $file -> storeAs('upload', $name);
@@ -35,7 +37,7 @@ class FileController extends Controller
                 'extension' => $file -> extension(),
                 'model_type' => $modelType,
                 'model_id' => $modelId,
-                'path' => Storage ::url($path),
+                'path' => $path,
             ]);
         }
         return $this -> responseSuccess($path);

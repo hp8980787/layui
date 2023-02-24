@@ -22,7 +22,7 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
 
     Route ::any('users/login', [C\UserController::class, 'login']) -> name('users.login');
     Route ::middleware(['auth']) -> group(function () {
-        Route ::get('/dashboard', [C\DashboardController::class, 'index'])->name('/');
+        Route ::get('/dashboard', [C\DashboardController::class, 'index']) -> name('/');
         Route ::name('menus.') -> group(function () {
             Route ::post('api/menus', [C\MenuController::class, 'index']) -> name('api');
             Route ::get('menus', [C\MenuController::class, 'index']) -> name('index');
@@ -37,7 +37,9 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
             Route ::any('users/create', [C\UserController::class, 'create']) -> name('create');
             Route ::post('users/store', [C\UserController::class, 'store']) -> name('store');
             Route ::get('users/{id}/edit', [C\UserController::class, 'edit']) -> name('edit');
+            Route ::put('users/update', [C\UserController::class, 'update']) -> name('update');
             Route ::get('users/logout', [C\UserController::class, 'logout']) -> name('logout');
+            Route ::delete('users/{id}', [C\UserController::class, 'destroy']) -> name('destroy');
         });
 
         Route ::post('upload-files', [C\FileController::class, 'upload']) -> name('files.upload');

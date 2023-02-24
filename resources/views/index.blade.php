@@ -39,9 +39,16 @@
             <li class="layui-nav-item layui-hide-xs message"></li>
             <li class="layui-nav-item user">
                 <!-- 头 像 -->
-                <a class="layui-icon layui-icon-username" href="javascript:;"></a>
+
+                @if(auth()->user()->image)
+                    <a href="javascript:;"><img width="20px" src="{{ auth()->user()->avatar }}" alt=""></a>
+                @else
+                    <a class="layui-icon layui-icon-username" href="javascript:;"></a>
+                @endif
+
                 <!-- 功 能 菜 单 -->
                 <dl class="layui-nav-child">
+
                     <dd><a class="userInfo" user-menu-title="基本资料">基本资料</a></dd>
                     <dd><a href="{{ route('admin.users.logout') }}" class="logout">注销登录</a></dd>
                 </dl>
@@ -123,7 +130,7 @@
                 type: 2,
                 title: '新增',
                 shade: 0.1,
-                area: [common.isModile() ? '100%' : '500px', common.isModile() ? '100%' : '400px'],
+                area: [common.isModile() ? '100%' : '600px', common.isModile() ? '100%' : '500px'],
                 content: '{{ route('admin.users.edit',['id'=>auth()->user()->id]) }}'
             });
         })

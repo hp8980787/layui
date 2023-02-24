@@ -22,7 +22,7 @@
         <input name="name" placeholder="账 户 : admin " lay-verify="required" hover class="layui-input"/>
     </div>
     <div class="layui-form-item">
-        <input name="password" placeholder="密 码 : admin " lay-verify="required" hover class="layui-input"/>
+        <input type="password" name="password" placeholder="密 码 : admin " lay-verify="required" hover class="layui-input"/>
     </div>
     <div class="layui-form-item">
         <input name="captcha" placeholder="验证码 : " hover lay-verify="required" class="code layui-input layui-input-inline"/>

@@ -9,7 +9,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">头像</label>
                 <div class="layui-input-block">
-                    <input type="hidden" name="avatar">
+                    <input type="hidden" name="avatar" value="{{ $user->avatar }}">
+                    <input type="hidden" name="userId" value="{{ $user->id }}">
                     <button type="button" class="layui-btn" id="avatar">
                         <i class="layui-icon">&#xe67c;</i>上传图片
                     </button>
@@ -38,15 +39,16 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">password</label>
+                <label class="layui-form-label">输入旧密码</label>
                 <div class="layui-input-block">
-                    <input type="password" name="password" lay-verify="required|password" class="layui-input">
+                    <input type="password" name="old_pwssword" lay-verify="" class="layui-input">
                 </div>
+
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">确认密码</label>
+                <label class="layui-form-label">password</label>
                 <div class="layui-input-block">
-                    <input type="password" name="password_confirm" lay-verify="required" class="layui-input">
+                    <input type="password" name="password" lay-verify="password" class="layui-input">
                 </div>
             </div>
         </div>
@@ -68,13 +70,13 @@
         let form = layui.form;
         let $ = layui.jquery;
         let upload = layui.upload;
-        let CREATE_PATH = '{{ route('admin.users.store') }}'
+        let UPDATE_PATH = '{{ route('admin.users.update') }}'
         upload.render({
             elem: '#avatar',
-            exts:'jpg|png|gif|bmp|jpeg',
+            exts: 'jpg|png|gif|bmp|jpeg',
             type: 'post',
             dataType: 'json',
-            contentType:'application/json',
+            contentType: 'application/json',
             data: {
                 'model_type': 'user',
                 'model_id': '{{ auth()->user()->id }}'
@@ -95,18 +97,12 @@
                     return '长度不符合';
                 }
             },
-            password: function (value, item) {
-                let confirm = $('input[name="password_confirm"]').val();
-                if (value != confirm) {
-                    return '两次密码不一致';
-                }
 
-            }
         });
         form.on('submit(userCreate)', function (data) {
             $.ajax({
-                url: CREATE_PATH,
-                type: 'post',
+                url: UPDATE_PATH,
+                type: 'put',
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json',

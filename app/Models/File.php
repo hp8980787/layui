@@ -13,4 +13,10 @@ class File extends Model
     protected $fillable = [
         'name', 'original_name', 'extension', 'path', 'model_id', 'model_type'
     ];
+
+    public function model()
+    {
+        return $this -> morphTo();
+    }
+
 }

@@ -50,8 +50,29 @@ class UserController extends Controller
     {
 
         $id = $request -> id;
-        $user = User ::query() -> findOrFail($id);
-        return view('admin.users.edit',compact('user'));
+        $user = User ::query() -> with('image') -> findOrFail($id);
+        return view('admin.users.edit', compact('user'));
+    }
+
+    public function update(Request $request)
+    {
+        $data = $request -> only(['nickname', 'password']);
+        $data['password'] = Hash ::make($data['password']);
+        User ::query() -> where('id', $request -> userId) -> update($data);
+        return $this -> responseSuccess('', '修改成功!');
+    }
+
+
+    public function destroy(Request $request)
+    {
+
+        $id = $request -> id;
+        $ids = is_array($id) ? $id : [$id];
+        if (in_array(auth() -> user() -> id, $ids)) {
+            return $this -> responseFail('您不能删除自己');
+        }
+        User ::query() -> whereIn('id', $ids) -> delete();
+        return $this -> responseSuccess();
     }
 
     public function logout()
