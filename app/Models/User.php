@@ -50,10 +50,7 @@ class User extends Authenticatable
         return $this -> morphOne(File::class, 'model', 'model_type', 'model_id');
     }
 
-    public function getMorphClass()
-    {
-        return 'user';
-    }
+
 
     public function avatar():Attribute
     {

@@ -78,7 +78,7 @@
             dataType: 'json',
             contentType: 'application/json',
             data: {
-                'model_type': 'user',
+                'model_type': '{!! getClassName(new \App\Models\User()) !!}',
                 'model_id': '{{ auth()->user()->id }}'
             },
             url: '{{ route('admin.files.upload') }}',

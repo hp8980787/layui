@@ -22,6 +22,7 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
 
     Route ::any('users/login', [C\UserController::class, 'login']) -> name('users.login');
     Route ::middleware(['auth']) -> group(function () {
+
         Route ::get('/dashboard', [C\DashboardController::class, 'index']) -> name('/');
         Route ::name('menus.') -> group(function () {
             Route ::post('api/menus', [C\MenuController::class, 'index']) -> name('api');
@@ -32,6 +33,7 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
             Route ::delete('menus/delete', [C\MenuController::class, 'destroy']) -> name('destroy');
             Route ::get('menus-all', [C\MenuController::class, 'all']) -> name('all');
         });
+
         Route ::name('users.') -> group(function () {
             Route ::any('users', [C\UserController::class, 'index']) -> name('index');
             Route ::any('users/create', [C\UserController::class, 'create']) -> name('create');
@@ -40,6 +42,14 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
             Route ::put('users/update', [C\UserController::class, 'update']) -> name('update');
             Route ::get('users/logout', [C\UserController::class, 'logout']) -> name('logout');
             Route ::delete('users/{id}', [C\UserController::class, 'destroy']) -> name('destroy');
+        });
+
+        Route ::name('permission.') -> group(function () {
+            Route ::any('permissions', [C\PermissionController::class, 'index']) -> name('index');
+        });
+
+        Route::name('roles.')->group(function (){
+           Route::any('roles',[C\RoleController::class,'index'])->name('index');
         });
 
         Route ::post('upload-files', [C\FileController::class, 'upload']) -> name('files.upload');

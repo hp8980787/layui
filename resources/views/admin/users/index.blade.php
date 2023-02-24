@@ -7,21 +7,9 @@
         <form class="layui-form" action="">
             <div class="layui-form-item">
                 <div class="layui-form-item layui-inline">
-                    <label class="layui-form-label">用户名</label>
+                    <label class="layui-form-label">搜索关键字</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="realName" placeholder="" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item layui-inline">
-                    <label class="layui-form-label">性别</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="realName" placeholder="" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item layui-inline">
-                    <label class="layui-form-label">邮箱</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="realName" placeholder="" class="layui-input">
+                        <input type="text" name="search" placeholder="" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item layui-inline">
@@ -73,6 +61,7 @@
         let CREATE_PATH = '{{ route('admin.users.create') }}'
         let EDIT_PATH = '{{ route('admin.users.edit',['id'=>auth()->user()->id]) }}';
         let DELETE_PATH = '{{ route('admin.users.destroy',['id'=>auth()->user()->id]) }}';
+        window.where = {};
         let cols = [
             [{
                 type: 'checkbox'
@@ -140,15 +129,14 @@
         });
 
         form.on('submit(user-query)', function (data) {
+            console.log(data.field);
+            window.where.filter = data.field
             table.reload('user-table', {
-                where: data.field
+                where: window.where
             })
             return false;
         });
 
-        form.on('switch(user-enable)', function (obj) {
-            layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
-        });
 
         window.add = function () {
             layer.open({
@@ -166,7 +154,7 @@
                 title: '修改',
                 shade: 0.1,
                 area: ['500px', '400px'],
-                content: EDIT_PATH
+                content: `{{ adminUrlPrefix() }}/users/${obj.data.id}/edit`
             });
         }
 
@@ -237,6 +225,7 @@
                 }
             })
         }
+
         window.refresh = function (param) {
             table.reload('user-table');
         }

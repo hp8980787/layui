@@ -60,11 +60,11 @@ class MenuController extends Controller
              **/
             DB ::beginTransaction();
             $parentId = $request -> parent_id;
-            if ($parentId) {
-                $menu = Menu ::query() -> findOrFail($parentId);
-                $menu -> type = 1;
-                $menu -> save();
-            }
+//            if ($parentId) {
+//                $menu = Menu ::query() -> findOrFail($parentId);
+//                $menu -> type = 1;
+//                $menu -> save();
+//            }
             $this -> save($request -> input());
             DB ::commit();
         } catch (\Exception $exception) {

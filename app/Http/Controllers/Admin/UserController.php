@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
@@ -16,7 +18,13 @@ class UserController extends Controller
         if ($request -> isMethod('POST')) {
             $page = $request -> page ?? 1;
             $perPage = $request -> perPage ?? 15;
-            $users = QueryBuilder ::for(User::class) -> defaultSort('-id') -> paginate($perPage);
+            $users = QueryBuilder ::for(User::class) -> defaultSort('-id')
+                ->allowedFilters([
+                    AllowedFilter::callback('search',function (Builder $builder,$value){
+                        $builder->where('name','like',"%$value%")->orWhere('nickname','like',"%$value%");
+                    })
+                ])
+                -> paginate($perPage);
             return $this -> responseSuccess(UserResource ::forCollection($users));
         }
         return view('admin.users.index');

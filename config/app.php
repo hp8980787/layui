@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -185,7 +185,8 @@ return [
         /*
          * Package Service Providers...
          */
-        'Mews\Captcha\CaptchaServiceProvider',
+        Mews\Captcha\CaptchaServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -208,8 +209,8 @@ return [
     |
     */
 
-    'aliases' => Facade::defaultAliases()->merge([
+    'aliases' => Facade ::defaultAliases() -> merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
-    ])->toArray(),
+    ]) -> toArray(),
 
 ];
