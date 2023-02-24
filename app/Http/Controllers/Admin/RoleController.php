@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-
+        if ($request->isMethod('POST')) {
+            return $this->responseSuccess('');
+        }
+        return view('admin.roles.index');
     }
 }
