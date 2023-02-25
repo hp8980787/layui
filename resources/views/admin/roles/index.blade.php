@@ -4,39 +4,17 @@
 <body class="pear-container">
 <div class="layui-card">
     <div class="layui-card-body">
-        <form class="layui-form" action="">
-            <div class="layui-form-item">
-                <div class="layui-form-item layui-inline">
-                    <label class="layui-form-label">搜索关键字</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="search" placeholder="" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item layui-inline">
-                    <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="user-query">
-                        <i class="layui-icon layui-icon-search"></i>
-                        查询
-                    </button>
-                    <button type="reset" class="pear-btn pear-btn-md">
-                        <i class="layui-icon layui-icon-refresh"></i>
-                        重置
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-<div class="layui-card">
-    <div class="layui-card-body">
         <table id="role-table" lay-filter="role-table"></table>
     </div>
 </div>
 @include('admin.layouts.__footer')
+
 <script type="text/html" id="role-toolbar">
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="layui-icon layui-icon-add-1"></i>
     </button>
 </script>
+
 <script>
     layui.use(['table', 'jquery', 'common', 'form'], function () {
         let $ = layui.jquery;
@@ -44,6 +22,7 @@
         let common = layui.common;
 
         let INDEX_PATH = '{{ route('admin.roles.index') }}';
+        let CREATE_PATH = '{{ route('admin.roles.create') }}'
 
         const csrfToken = '{{ csrf_token() }}';
         let headers = {'X-CSRF-TOKEN': csrfToken};
@@ -79,6 +58,25 @@
             }, 'filter', 'print', 'exports']
 
         })
+
+        table.on('toolbar(role-table)', function (obj) {
+
+            switch (obj.event) {
+                case 'add':
+                    add();
+                    break;
+            }
+        });
+
+        let add = function () {
+            layer.open({
+                type: 2,
+                title: '新增',
+                shade: 0.1,
+                area: [common.isModile() ? '100%' : '500px', common.isModile() ? '100%' : '500px'],
+                content:CREATE_PATH
+            })
+        }
     });
 
 </script>

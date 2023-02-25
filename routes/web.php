@@ -48,8 +48,10 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
             Route ::any('permissions', [C\PermissionController::class, 'index']) -> name('index');
         });
 
-        Route::name('roles.')->group(function (){
-           Route::any('roles',[C\RoleController::class,'index'])->name('index');
+        Route ::name('roles.') -> group(function () {
+            Route ::any('roles', [C\RoleController::class, 'index']) -> name('index');
+            Route ::get('roles/create', [C\RoleController::class, 'create']) -> name('create');
+            Route::post('roles/store',[C\RoleController::class,'store'])->name('store');
         });
 
         Route ::post('upload-files', [C\FileController::class, 'upload']) -> name('files.upload');
