@@ -62,6 +62,15 @@ Route::prefix('admin')->as('admin.')->middleware(['admin.locale'])->group(functi
             Route::delete('roles/delete', [C\RoleController::class, 'destroy'])->name('destroy');
         });
 
+        Route::name('files.')->group(function () {
+            Route::any('files', [C\FileController::class, 'index'])->name('index');
+            Route::get('files/create', [C\FileController::class, 'crate'])->name('create');
+            Route::post('files/store', [C\FileController::class, 'store'])->name('store');
+            Route::get('files/{id}/edit', [C\FileController::class, 'edit'])->name('edit');
+            Route::put('files/update', [C\FileController::class, 'update'])->name('update');
+            Route::delete('files/delete', [C\FileController::class, 'destroy'])->name('destroy');
+
+        });
         Route::post('upload-files', [C\FileController::class, 'upload'])->name('files.upload');
     });
 
