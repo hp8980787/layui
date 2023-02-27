@@ -60,7 +60,12 @@
             method: 'post',
             headers: headers,
             where: window.where,
+            request: {
+                limitName: 'perPage',
+                pageName: 'page',
+            },
             page: true,
+            limits: [20, 30, 50],
             cols: cols,
             skin: 'line',
             toolbar: '#role-toolbar',
@@ -133,7 +138,7 @@
                         layer.msg(res.msg, {
                             icon: 1,
                             time: 1000
-                        },function () {
+                        }, function () {
                             window.refresh()
                         });
                     } else {
