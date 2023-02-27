@@ -10,6 +10,6 @@ if (!function_exists('adminUrlPrefix')) {
 if (!function_exists('getClassName')) {
     function getClassName(object $object): string
     {
-        return  addslashes(get_class($object));
+        return addslashes(get_class($object));
     }
 }

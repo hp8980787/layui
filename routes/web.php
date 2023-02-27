@@ -44,17 +44,21 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
             Route ::delete('users/{id}', [C\UserController::class, 'destroy']) -> name('destroy');
         });
 
-        Route ::name('permission.') -> group(function () {
+        Route ::name('permissions.') -> group(function () {
             Route ::any('permissions', [C\PermissionController::class, 'index']) -> name('index');
+            Route ::get('permissions/create', [C\PermissionController::class, 'create']) -> name('create');
+            Route ::post('permissions/store', [C\PermissionController::class, 'store']) -> name('store');
+            Route ::get('permissions/{id}/edit', [C\PermissionController::class, 'edit']) -> name('edit');
+            Route ::put('permissions/update', [C\PermissionController::class, 'update']) -> name('update');
         });
 
         Route ::name('roles.') -> group(function () {
             Route ::any('roles', [C\RoleController::class, 'index']) -> name('index');
             Route ::get('roles/create', [C\RoleController::class, 'create']) -> name('create');
-            Route::post('roles/store',[C\RoleController::class,'store'])->name('store');
-            Route::get('roles/{id}/edit',[C\RoleController::class,'edit'])->name('edit');
-            Route::put('roles/update',[C\RoleController::class,'update'])->name('update');
-            Route::delete('roles/delete',[C\RoleController::class,'destroy'])->name('destroy');
+            Route ::post('roles/store', [C\RoleController::class, 'store']) -> name('store');
+            Route ::get('roles/{id}/edit', [C\RoleController::class, 'edit']) -> name('edit');
+            Route ::put('roles/update', [C\RoleController::class, 'update']) -> name('update');
+            Route ::delete('roles/delete', [C\RoleController::class, 'destroy']) -> name('destroy');
         });
 
         Route ::post('upload-files', [C\FileController::class, 'upload']) -> name('files.upload');
