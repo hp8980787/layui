@@ -3,12 +3,13 @@
 @include('admin.layouts.__header',['title'=>'新增角色'])
 <body>
 <form action="" class="layui-form">
+    <input type="hidden" name="id" value="{{ $role->id }}">
     <div class="mainBox">
         <div class="main-container">
             <div class="layui-form-item">
                 <label class="layui-form-label">角色名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="name" lay-verify="required" class="layui-input">
+                    <input type="text" name="name" value="{{ $role->name }}" lay-verify="required" class="layui-input">
                 </div>
             </div>
         </div>
@@ -33,14 +34,14 @@
         let $ = layui.jquery;
         let form = layui.form;
 
-        let STORE_PATH = '{{ route('admin.roles.store') }}';
+        let UPDATE_PATH = '{{ route('admin.roles.update') }}';
         let headers = {
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
         };
         form.on('submit(role-store)', function (data) {
             $.ajax({
-                url: STORE_PATH,
-                type: 'post',
+                url: UPDATE_PATH,
+                type: 'put',
                 headers: headers,
                 data: data.field,
                 success: function (res) {
@@ -48,8 +49,10 @@
                         layer.msg(res.msg, {
                             icon: 1,
                             time: 1000
+                        },function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name)); //关闭当前页
                         });
-                        parent.layer.close(parent.layer.getFrameIndex(window.name)); //关闭当前页
+
                     } else {
                         layer.msg(res.msg, {
                             icon: 2,

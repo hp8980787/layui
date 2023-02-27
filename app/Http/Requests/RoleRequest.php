@@ -31,7 +31,7 @@ class RoleRequest extends FormRequest
         switch ($action) {
             case 'store':
                 return [
-                    'name' => 'required|min:2|max:15'
+                    'name' => 'required|min:2|max:15|unique:roles,name'
                 ];
         }
         return [

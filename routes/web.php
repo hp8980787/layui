@@ -52,6 +52,9 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
             Route ::any('roles', [C\RoleController::class, 'index']) -> name('index');
             Route ::get('roles/create', [C\RoleController::class, 'create']) -> name('create');
             Route::post('roles/store',[C\RoleController::class,'store'])->name('store');
+            Route::get('roles/{id}/edit',[C\RoleController::class,'edit'])->name('edit');
+            Route::put('roles/update',[C\RoleController::class,'update'])->name('update');
+            Route::delete('roles/delete',[C\RoleController::class,'destroy'])->name('destroy');
         });
 
         Route ::post('upload-files', [C\FileController::class, 'upload']) -> name('files.upload');
