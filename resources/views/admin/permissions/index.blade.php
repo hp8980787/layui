@@ -29,7 +29,7 @@
 
         const INDEX_PATH = '{{ route('admin.permissions.index') }}';
         const CREATE_PATH = '{{ route('admin.permissions.create') }}';
-
+        const DELETE_PATH = '{{  route('admin.permissions.destroy') }}';
         window.where = {};
         let headers = {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -109,10 +109,43 @@
             })
         }
         let remove = function (obj) {
-            destroy(obj.data.id);
+            layer.confirm('确定删除该权限吗',{
+                icon:3,
+                title:'提示'
+            },function (index) {
+                layer.close(index);
+                destroy(obj.data.id);
+            });
         }
 
         let destroy = function (id) {
+            let loading = layer.load();
+            $.ajax({
+                url: DELETE_PATH,
+                method: 'delete',
+                headers: headers,
+                dataType: 'json',
+                data: {
+                    id: id,
+                }, success: function (res) {
+                    if (res.success) {
+                        layer.msg(res.msg, {
+                            icon: 1,
+                            time: 1000
+                        }, function () {
+                            window.refresh();
+                        })
+                    } else {
+
+                    }
+
+                }, error: function (error) {
+
+                }
+            });
+            layer.close(loading);
+            return false;
+
         }
 
         let edit = function (obj) {

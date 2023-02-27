@@ -56,7 +56,7 @@ class PermissionController extends Controller
     {
         $id = $request -> id;
         $id = is_array($id) ? $id : [$id];
-        Role ::query() -> whereIn('id', $id) -> delete();
+        Permission ::query() -> whereIn('id', $id) -> delete();
         return $this->responseSuccess('','删除成功!');
     }
 }
