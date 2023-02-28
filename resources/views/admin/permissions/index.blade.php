@@ -40,7 +40,7 @@
         }
         let cols = [[
             {
-                type: 'checkout'
+                type: 'checkbox'
             }, {
                 title: 'id',
                 field: 'id'
