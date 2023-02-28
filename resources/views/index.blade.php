@@ -133,7 +133,8 @@
                 area: [common.isModile() ? '100%' : '600px', common.isModile() ? '100%' : '500px'],
                 content: '{{ route('admin.users.edit',['id'=>auth()->user()->id]) }}'
             });
-        })
+        });
+
 
     })
 </script>

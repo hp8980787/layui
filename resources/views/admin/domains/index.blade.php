@@ -4,7 +4,26 @@
 <body class="pear-container">
 <div class="layui-card">
     <div class="layui-card-body">
-
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <div class="layui-form-item layui-inline">
+                    <label class="layui-form-label">搜索</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="url" placeholder="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-inline">
+                    <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="domain-query">
+                        <i class="layui-icon layui-icon-search"></i>
+                        查询
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        <i class="layui-icon layui-icon-refresh"></i>
+                        重置
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 <div class="layui-card">
@@ -16,7 +35,8 @@
 {{--table头部工具栏--}}
 <script id="domain-toolbar" type="text/html">
     <x-lay-button type="add"></x-lay-button>
-    <x-lay-button type="" color="primary" text="检查网站" event="check" icon="layui-icon-find-fill" id="btn-check"></x-lay-button>
+    <x-lay-button type="" color="primary" text="检查网站" event="check" icon="layui-icon-find-fill"
+                  id="btn-check"></x-lay-button>
 </script>
 
 <script>
@@ -107,6 +127,15 @@
             }, 'filter', 'print', 'exports']
         });
 
+        form.on('submit(domain-query)', function (data) {
+            console.log(data.field.search);
+            window.where.filter = data.field;
+            table.reload('domain-table', {
+                where: window.where
+            })
+            return false;
+        })
+
         table.on('toolbar(domain-table)', function (obj) {
             switch (obj.event) {
                 case 'check':
@@ -141,7 +170,7 @@
                             layer.msg(res.msg, {
                                 icon: 1,
                                 time: 2000
-                            },function () {
+                            }, function () {
                                 console.log(1111);
                                 button.load({
                                     elem: '#btn-check',
@@ -162,7 +191,7 @@
 
         table.on('checkbox(domain-table)', function (obj) {
             let type = obj.type;
-            if (type === 'all'&& obj.checked) {
+            if (type === 'all' && obj.checked) {
                 layer.confirm('是否选择全部页面域名', {
                     icon: 3,
                     buttons: ['是', '否'],
