@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use Illuminate\Support\Str;
 use Illuminate\View\Component;
 
 class Button extends Component
@@ -17,6 +18,7 @@ class Button extends Component
     public string $event = '';
     public string $icon = '';
     public string $text = '';
+    public string $id = '';
 
     const EDIT_TYPE = 'edit';
     const ADD_TYPE = 'add';
@@ -45,15 +47,15 @@ class Button extends Component
         self::EDIT_TYPE => '编辑',
     ];
 
-    public function __construct($type = '', $color = '', $event = '', $size = '', $icon = '', $text = '')
+    public function __construct($type = '', $color = '', $event = '', $size = '', $icon = '', $text = '', $id = '')
     {
         $this -> type = $type;
-        $this->size =$size?:'sm';
+        $this -> size = $size ?: 'sm';
         $this -> color = $color ?: (self::COLOR_GROUP[$this -> type] ?? 'primary');
         $this -> icon = $icon ?: self::ICON_GROUP[$this -> type] ?? 'layui-icon-add';
         $this -> event = $event ?: self::EVENT_GROUP[$this -> type] ?? 'add';
         $this -> text = $text ?: self::TEXT_GROUP[$this -> type] ?? '新增';
-
+        $this -> id = $id ;
     }
 
     /**
