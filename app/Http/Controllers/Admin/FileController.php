@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\FileRequest;
+use App\Http\Resources\FileResource;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Spatie\QueryBuilder\QueryBuilder;
+use App\Models\User;
 
 class FileController extends Controller
 {
@@ -43,5 +47,18 @@ class FileController extends Controller
             ]);
         }
         return $this -> responseSuccess($path);
+    }
+
+    public function index(FileRequest $request)
+    {
+        if ($request -> isMethod('POST')) {
+            $page = $request -> page ?? 1;
+            $perPage = $request -> perPage ?? 20;
+            $files = QueryBuilder ::for(File ::query() -> whereHasMorph('model', User::class)) -> defaultSort('-id')
+                -> paginate($perPage);
+
+            return $this -> responseSuccess(FileResource ::forCollection($files));
+        }
+        return view('admin.files.file');
     }
 }
