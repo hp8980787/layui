@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 
+use App\Models\Domain;
 use Carbon\Carbon;
 
 class DomainResource extends JsonResource
@@ -23,6 +24,12 @@ class DomainResource extends JsonResource
             'check_status' => $this -> check_status,
             'country' => CountryResource ::make($this -> country),
             'created_at' => Carbon ::make($this -> created_at) -> format('Y-m-d H:i:s'),
+            'expired_time' => $this -> expired_time,
+            'expired_days' => $this -> when($this -> expired_time && $this -> expired_time != null, function () {
+                return Carbon ::create($this -> expired_time) -> diffInDays(Carbon ::now());
+            }),
+            'expired_status' => Domain::STATUS_EXPIRED_GROUP[$this -> expired_status],
+            'http_status' => Domain::STATUS_HTTP_GROUP[$this -> http_status],
         ];
     }
 }

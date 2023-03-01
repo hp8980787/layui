@@ -7,7 +7,9 @@
     "require": {
         "php": "^8.0.2",
         "barryvdh/laravel-debugbar": "^3.8",
+        "geoip2/geoip2": "^2.13",
         "guzzlehttp/guzzle": "^7.2",
+        "io-developer/php-whois": "^4.1",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",

@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin as C;
 
-Route ::get('/', function () {
-    return view('index');
-});
+//Route ::get('/', function () {
+//    return view('index');
+//});
 Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group(function () {
 
     Route ::any('users/login', [C\UserController::class, 'login']) -> name('users.login');
@@ -73,11 +73,22 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
         });
         Route ::post('upload-files', [C\FileController::class, 'upload']) -> name('files.upload');
 
-        Route ::name('domains.') -> group(function () {
-            Route ::any('domains', [C\DomainController::class, 'index']) -> name('index');
-            Route ::post('domains/check', [C\DomainController::class, 'check']) -> name('check');
+        Route ::name('domains.') ->prefix('domains')-> group(function () {
+            Route ::any('/', [C\DomainController::class, 'index']) -> name('index');
+            Route ::post('/check', [C\DomainController::class, 'check']) -> name('check');
+            Route ::get('/create', [C\DomainController::class, 'create']) -> name('create');
+        });
+
+        Route ::name('servers.') ->prefix('servers')-> group(function () {
+            Route ::any('/', [C\ServerController::class, 'index']) -> name('index');
+            Route::get('create',[C\ServerController::class,'create'])->name('create');
+            Route::post('store',[C\ServerController::class,'store'])->name('store');
         });
     });
 
 
+});
+
+Route::prefix('api')->group(function (){
+    Route::get('get-ip-info',[\App\Http\Controllers\IpController::class,'index']);
 });
