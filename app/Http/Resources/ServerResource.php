@@ -21,6 +21,7 @@ class ServerResource extends JsonResource
             'user' => $this -> user,
             'country' => CountryResource ::make($this -> country),
             'created_at' => $this -> created_at,
+            'editUrl'=>route('admin.servers.edit',[$this->id])
         ];
     }
 }

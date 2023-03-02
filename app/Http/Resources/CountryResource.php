@@ -15,11 +15,13 @@ class CountryResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this -> id,
             'name' => $this -> name,
             'currency' => $this -> currency,
             'translations' => json_decode($this -> translations, true),
             'iso2' => $this -> iso2,
             'currency_symbol' => $this -> currency_symbol,
+            'status' => $this -> status,
         ];
     }
 }

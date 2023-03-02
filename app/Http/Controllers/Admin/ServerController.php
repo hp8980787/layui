@@ -36,4 +36,10 @@ class ServerController extends Controller
         return $this -> responseSuccess('', '创建成功');
     }
 
+    public function edit(ServerRequest $request, $id)
+    {
+        $server = Server ::query() -> findOrFail($id);
+        return view('admin.servers.edit', compact('server'));
+    }
+
 }

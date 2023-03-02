@@ -35,7 +35,7 @@
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide-xs"><a href="#" class="menuSearch layui-icon layui-icon-search"></a></li>
             <li class="layui-nav-item layui-hide-xs"><a href="#" class="fullScreen layui-icon layui-icon-screen-full"></a></li>
-            <li class="layui-nav-item layui-hide-xs"><a href="http://www.pearadmin.com" class="layui-icon layui-icon-website"></a></li>
+            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;" id="clear-cache" class="layui-icon layui-icon-refresh"></a></li>
             <li class="layui-nav-item layui-hide-xs message"></li>
             <li class="layui-nav-item user">
                 <!-- 头 像 -->
@@ -103,8 +103,34 @@
 <script src="/component/pear/pear.js"></script>
 <!-- 框 架 初 始 化 -->
 <script>
+    function clear() {
+        let loading = layer.load();
+        $.ajax({
+            url: '{{ route('admin.clear-cache') }}',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            method: 'post',
+            beforeSend :function(xmlHttp){
+                xmlHttp.setRequestHeader("If-Modified-Since","0");
+                xmlHttp.setRequestHeader("Cache-Control","no-cache");
+            },
+            success: function (res) {
+                layer.close(loading);
+                $('html[manifest=saveappoffline.appcache]').attr('content', '');
+
+                if (res.success) {
+                    layer.msg(res.msg, {
+                        icon: 1,
+                        time: 1000
+                    });
+                }
+            }
+        })
+    }
 
     layui.use(['admin', 'jquery', 'popup', 'drawer', 'common'], function () {
+
         var $ = layui.jquery;
         var admin = layui.admin;
         var popup = layui.popup;
@@ -133,6 +159,38 @@
                 area: [common.isModile() ? '100%' : '600px', common.isModile() ? '100%' : '500px'],
                 content: '{{ route('admin.users.edit',['id'=>auth()->user()->id]) }}'
             });
+        });
+
+        $('#clear-cache').on('click', function () {
+            let loading = layer.load();
+            $.ajax({
+                url: '{{ route('admin.clear-cache') }}',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                method: 'post',
+                success: function (res) {
+                    var $body = $('body'),
+                        $iframe = $('#ef');
+                    $body.on('click', '[e-href]', function() {
+                        $('.e-header .e-nav-item.e-this').removeClass('e-this');
+                        $(this).parent().addClass('e-this');
+                        $iframe.attr('src', $(this).attr('e-href'));
+                    });
+
+                    localStorage.clear();
+
+                    localStorage.setItem('doc_theme', $body.hasClass('ew-dark') ? 'ew-dark' : '');
+                    $iframe.attr('src', $iframe.attr('src'));
+                    layer.close(loading);
+                    if (res.success) {
+                        layer.msg(res.msg, {
+                            icon: 1,
+                            time: 1000
+                        });
+                    }
+                }
+            })
         });
 
 
