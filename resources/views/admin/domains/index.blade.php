@@ -62,13 +62,35 @@
     @{{# if(d.server_id){  }}
 
     @{{#}else{  }}
-    <button class="pear-btn pear-btn-primary pear-btn-sm">
+    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="country-button" data-id="@{{ d.id }}" lay-filter="country-button">
         <i class="layui-icon layui-icon-search"></i>
     </button>
     @{{# }  }}
 </script>
+
+{{--国家选择html--}}
+<script id="select-country" type="text/html">
+    <form lay-filter="select-country-form" >
+        <input type="hidden" name="id" value="@{{ d.id }}">
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">选择国家</label>
+            <div class="layui-input-block">
+                <select name="country_id" class="layui-select" id="">
+                    @foreach($servers as $server)
+                        <option value="{{ $server->id }}">{{ $server->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="select-country-submit">提交</button>
+            </div>
+        </div>
+    </form>
+</script>
 <script>
-    layui.use(['jquery', 'table', 'form', 'common', 'button', 'popup', 'dropdown'], function () {
+    layui.use(['jquery', 'table', 'form', 'common', 'button', 'popup', 'dropdown', 'laytpl'], function () {
         let $ = layui.jquery;
         let table = layui.table;
         let form = layui.form;
@@ -76,10 +98,11 @@
         let button = layui.button;
         let popup = layui.popup;
         let dropdown = layui.dropdown;
+        let laytpl = layui.laytpl;
 
         let INDEX_URL = '{{ route('admin.domains.index') }}';
         let CHECK_URL = '{{ route('admin.domains.check') }}';
-
+        let UPDATE_URL = '{{ route('admin.domains.update') }}';
         let headers = {'X-CSRF-TOKEN': '{{ csrf_token() }}'}
 
         window.where = {
@@ -106,7 +129,7 @@
             }, {
                 title: '所属服务器',
                 field: 'server',
-                templet:'#server-select'
+                templet: '#server-select'
             }, {
                 title: '国家',
                 templet: function (d) {
@@ -227,6 +250,24 @@
         let add = function () {
 
         }
+        //修改ajax
+        let updateAjax = function (data) {
+            $.ajax({
+                url: UPDATE_URL,
+                headers: headers,
+                method: 'put',
+                data: data,
+                success: function (res) {
+                    if (res.success) {
+                        layer.msg(res.msg, {
+                            icon: 1,
+                            time: 1000,
+                        })
+                    }
+                }
+            });
+            return false;
+        }
 
         //检查域名过期时间
         let check = function (type) {
@@ -295,6 +336,32 @@
             console.log(obj.checked); //当前是否选中状态
             console.log(obj.data); //选中行的相关数据
             console.log(obj.type); //如果触发的是全选，则为：all，如果触发的是单选，则为：one
+        });
+        //行内选择国家事件
+        form.on('submit(country-button)', function (obj) {
+            let data = {id: this.getAttribute('data-id')};
+            let htmlDom = $('#select-country');
+            let getTpl = htmlDom.html();
+            let parseHtml = '';
+            laytpl(getTpl).render(data, function (html) {
+                parseHtml = html;
+            });
+
+            layer.open({
+                type: 1,
+                title: '选择国家',
+                skin: 'layui-layer-demo',
+                shade: 0.1,
+                area: ['400px', '200px'],
+                content: parseHtml,
+            })
+        });
+
+        //提交选择国家事件
+        form.on('submit(*)', function (data) {
+            console.log(data);
+            let form = data.field;
+            updateAjax(form);
         });
     })
 </script>

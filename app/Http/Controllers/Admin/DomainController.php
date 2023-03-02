@@ -34,8 +34,8 @@ class DomainController extends Controller
         }
 
         $countries = Country ::query() -> where('status', 1) -> get();
-        $servers =Server::query()->get();
-        return view('admin.domains.index', compact('countries','servers'));
+        $servers = Server ::query() -> get();
+        return view('admin.domains.index', compact('countries', 'servers'));
     }
 
     public function create()
@@ -61,4 +61,13 @@ class DomainController extends Controller
         }
         return $this -> responseSuccess('', '检查任务已创建!');
     }
+
+    public function update(DomainRequest $request)
+    {
+        $id = $request -> id;
+        $data = $request -> all();
+        Domain ::query() -> where('id', $id) -> update($data);
+        return $this->responseSuccess('','修改');
+    }
+
 }

@@ -77,6 +77,7 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
             Route ::any('/', [C\DomainController::class, 'index']) -> name('index');
             Route ::post('/check', [C\DomainController::class, 'check']) -> name('check');
             Route ::get('/create', [C\DomainController::class, 'create']) -> name('create');
+            Route ::put('/update', [C\DomainController::class, 'update']) -> name('update');
         });
 
         Route ::name('servers.') -> prefix('servers') -> group(function () {
