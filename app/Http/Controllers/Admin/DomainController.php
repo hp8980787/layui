@@ -8,6 +8,7 @@ use App\Http\Resources\DomainResource;
 use App\Jobs\CheckDomainsExpired;
 use App\Models\Country;
 use App\Models\Domain;
+use App\Models\Server;
 use Illuminate\Database\Eloquent\Builder;
 use Iodev\Whois\Factory;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -33,7 +34,8 @@ class DomainController extends Controller
         }
 
         $countries = Country ::query() -> where('status', 1) -> get();
-        return view('admin.domains.index', compact('countries'));
+        $servers =Server::query()->get();
+        return view('admin.domains.index', compact('countries','servers'));
     }
 
     public function create()

@@ -56,6 +56,17 @@
     <x-lay-button type="edit"></x-lay-button>
     <x-lay-button type="remove"></x-lay-button>
 </script>
+
+{{--服务器选择--}}
+<script id="server-select" type="text/html">
+    @{{# if(d.server_id){  }}
+
+    @{{#}else{  }}
+    <button class="pear-btn pear-btn-primary pear-btn-sm">
+        <i class="layui-icon layui-icon-search"></i>
+    </button>
+    @{{# }  }}
+</script>
 <script>
     layui.use(['jquery', 'table', 'form', 'common', 'button', 'popup', 'dropdown'], function () {
         let $ = layui.jquery;
@@ -92,6 +103,10 @@
                 width: 120,
                 field: 'expired_time',
                 sort: true,
+            }, {
+                title: '所属服务器',
+                field: 'server',
+                templet:'#server-select'
             }, {
                 title: '国家',
                 templet: function (d) {
@@ -209,7 +224,7 @@
         })
 
         //新增域名
-        let add =function () {
+        let add = function () {
 
         }
 
