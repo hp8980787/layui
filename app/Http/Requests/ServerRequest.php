@@ -24,14 +24,13 @@ class ServerRequest extends FormRequest
     public function rules()
     {
         $action = explode('@', $this -> route() -> getActionName())[1];
-        switch ($action) {
-            case 'store':
-                return [
-                    'ip' => 'required|ip',
-                    'name' => 'required|min:2,max:18',
-                    'user' => 'required|min:2,max:18',
-                    'country_id' => 'required'
-                ];
+        if ($action === 'store' || $action === 'update') {
+            return [
+                'ip' => 'required|ip',
+                'name' => 'required|min:2,max:18',
+                'user' => 'required|min:2,max:18',
+                'country_id' => 'required'
+            ];
         }
         return [
             //

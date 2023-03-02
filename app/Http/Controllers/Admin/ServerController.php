@@ -39,7 +39,16 @@ class ServerController extends Controller
     public function edit(ServerRequest $request, $id)
     {
         $server = Server ::query() -> findOrFail($id);
-        return view('admin.servers.edit', compact('server'));
+        $countries = Country ::query() -> where('status', 1) -> get();
+        return view('admin.servers.edit', compact('server', 'countries'));
+    }
+
+    public function update(ServerRequest $request)
+    {
+        $id = $request -> id;
+        $data = $request -> all();
+        Server::query()->where('id',$id)->update($data);
+        return $this->responseSuccess('','修改成功!');
     }
 
 }

@@ -2,7 +2,8 @@
 <html lang="en">
 @include('admin.layouts.__header',['title'=>'新增'])
 <body>
-<form class="layui-form" action="" lay-filter="server-form">
+<form class="layui-form" action="" lay-filter="update-form">
+    <input type="hidden" name="id">
     @include('admin.layouts.__errors')
     <div class="mainBox">
         <div class="main-container">
@@ -10,13 +11,14 @@
                 <label class="layui-form-label">ip</label>
                 <div class="layui-input-block">
                     <input type="text" name="ip" lay-verify="required|ip" autocomplete="off" placeholder="请输入ip"
-                           class="layui-input">
+                           value="{{ $server->ip }}" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">服务器名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入服务器名称"
+                    <input type="text" name="name" value="{{ $server->name }}" lay-verify="required" autocomplete="off"
+                           placeholder="请输入服务器名称"
                            class="layui-input">
                 </div>
             </div>
@@ -24,7 +26,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">服务器登录用户</label>
                 <div class="layui-input-block">
-                    <input type="text" name="user" lay-verify="required" autocomplete="off" placeholder="请输入服务器用户"
+                    <input type="text" name="user" lay-verify="required" value="{{ $server->user }}" autocomplete="off"
+                           placeholder="请输入服务器用户"
                            class="layui-input">
                 </div>
             </div>
@@ -46,7 +49,7 @@
     <div class="bottom">
         <div class="button-container">
             <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit=""
-                    lay-filter="server-store">
+                    lay-filter="server-update">
                 <i class="layui-icon layui-icon-ok"></i>
                 提交
             </button>
@@ -63,7 +66,7 @@
         let form = layui.form;
         let $ = layui.jquery;
         let headers = {'X-CSRF-TOKEN': '{{ csrf_token() }}'};
-        let STORE_PATH = '{{ route('admin.servers.store') }}';
+        let UPDATE_PATH = '{{ route('admin.servers.update') }}';
 
         $('input[name="ip"]').on('blur', function () {
             let value = $('input[name="ip"]').val();
@@ -99,14 +102,20 @@
             }
 
         });
-        form.on('submit(server-store)', function (data) {
+
+        form.val('update-form', {
+            id: '{{ $server->id }}',
+            country_id: '{{ $server->country_id }}'
+        })
+        form.on('submit(server-update)', function (data) {
+            console.log(data);
             $.ajax({
-                url: STORE_PATH,
+                url: UPDATE_PATH,
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json',
                 headers: headers,
-                type: 'post',
+                type: 'put',
                 success: function (result) {
                     if (result.success) {
                         layer.msg(result.msg, {
@@ -127,6 +136,7 @@
                 }
             })
             return false;
+
         });
     })
 </script>

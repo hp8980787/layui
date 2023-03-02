@@ -15,8 +15,8 @@
 </script>
 {{--table 行工具栏--}}
 <script id="server-bar" type="text/html">
-<x-lay-button type="edit"></x-lay-button>
-<x-lay-button type="remove"></x-lay-button>
+    <x-lay-button type="edit"></x-lay-button>
+    <x-lay-button type="remove"></x-lay-button>
 </script>
 <script>
     layui.use(['table', 'form', 'common', 'jquery'], function () {
@@ -47,8 +47,8 @@
             }, {
                 title: '国家',
                 field: 'country_id',
-                templet:function (d) {
-                    return d.country.name +' '+d.country.translations['cn'];
+                templet: function (d) {
+                    return d.country.name + ' ' + d.country.translations['cn'];
                 }
             }, {
                 title: 'ip',
@@ -87,6 +87,14 @@
                     break;
             }
         });
+        //table 行内事件
+        table.on('tool(server-table)', function (obj) {
+            switch (obj.event) {
+                case 'edit':
+                    edit(obj);
+                    break
+            }
+        })
         //添加
         let add = function (obj) {
             layer.open({
@@ -95,6 +103,28 @@
                 shade: 0.1,
                 area: [common.isModile() ? '100%' : '500px', common.isModile() ? '100%' : '500px'],
                 content: CREATE_PATH,
+                end:function () {
+                    reload();
+                }
+            })
+        }
+
+        let edit = function (obj) {
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: 0.1,
+                area: [common.isModile() ? '100%' : '500px', common.isModile() ? '100%' : '500px'],
+                content: obj.data.editUrl,
+                end: function () {
+                    reload();
+                }
+            })
+        }
+
+        let reload = function () {
+            table.reload('server-table', {
+                where: window.where,
             })
         }
     });
