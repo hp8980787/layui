@@ -21,6 +21,10 @@ class DomainResource extends JsonResource
             'id' => $this -> id,
             'name' => $this -> name,
             'url' => $this -> url,
+            'server_id' => $this -> server_id,
+            'server' => $this -> when($this -> server_id, function () {
+                return $this -> server;
+            }),
             'check_status' => $this -> check_status,
             'country' => CountryResource ::make($this -> country),
             'created_at' => Carbon ::make($this -> created_at) -> format('Y-m-d H:i:s'),

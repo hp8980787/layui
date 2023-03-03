@@ -44,6 +44,7 @@
         <table id="domain-table" lay-filter="domain-table"></table>
     </div>
 </div>
+<div id="selectCountryDiv"></div>
 @include('admin.layouts.__footer')
 {{--table头部工具栏--}}
 <script id="domain-toolbar" type="text/html">
@@ -60,31 +61,26 @@
 {{--服务器选择--}}
 <script id="server-select" type="text/html">
     @{{# if(d.server_id){  }}
-
-    @{{#}else{  }}
-    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="country-button" data-id="@{{ d.id }}" lay-filter="country-button">
+       <span class="layui-badge layui-bg-green">@{{ d.server.name }}</span>
+    @{{# }else{  }}
+    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="country-button" data-server-id="@{{ d.server_id }}" data-id="@{{ d.id }}" lay-filter="country-button">
         <i class="layui-icon layui-icon-search"></i>
     </button>
     @{{# }  }}
 </script>
 
 {{--国家选择html--}}
-<script id="select-country" type="text/html">
-    <form lay-filter="select-country-form" >
+<script id="selectCountry" type="text/html">
+    <form id="select-country-form" lay-filter="select-country-form">
         <input type="hidden" name="id" value="@{{ d.id }}">
         <div class="layui-form-item">
-            <label for="" class="layui-form-label">选择国家</label>
+            <label for="" class="layui-form-label">选择服务器</label>
             <div class="layui-input-block">
-                <select name="country_id" class="layui-select" id="">
+                <select name="server_id" class="layui-select" lay-search>
                     @foreach($servers as $server)
                         <option value="{{ $server->id }}">{{ $server->name }}</option>
                     @endforeach
                 </select>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="select-country-submit">提交</button>
             </div>
         </div>
     </form>
@@ -332,16 +328,16 @@
                     }
                 })
             }
-            console.log(obj); //当前行的一些常用操作集合
-            console.log(obj.checked); //当前是否选中状态
-            console.log(obj.data); //选中行的相关数据
-            console.log(obj.type); //如果触发的是全选，则为：all，如果触发的是单选，则为：one
+            // console.log(obj); //当前行的一些常用操作集合
+            // console.log(obj.checked); //当前是否选中状态
+            // console.log(obj.data); //选中行的相关数据
+            // console.log(obj.type); //如果触发的是全选，则为：all，如果触发的是单选，则为：one
         });
         //行内选择国家事件
         form.on('submit(country-button)', function (obj) {
             let data = {id: this.getAttribute('data-id')};
             let htmlDom = $('#select-country');
-            let getTpl = htmlDom.html();
+            let getTpl = selectCountry.innerHTML, selectCountryDiv = document.getElementById('selectCountryDiv');
             let parseHtml = '';
             laytpl(getTpl).render(data, function (html) {
                 parseHtml = html;
@@ -354,15 +350,22 @@
                 shade: 0.1,
                 area: ['400px', '200px'],
                 content: parseHtml,
-            })
+                btn: ['确认', '取消'],
+                yes: function (index, layero) {
+                    let data = {};
+                    // let formData = ($("#select-country-form").serializeArray().map(function (v) {return [v.name, v.value];}));
+                    let formData = $("#select-country-form").serializeArray().map(v => {
+                        data[v.name] = v.value;
+                        return data;
+                    });
+                    updateAjax(data);
+                    layer.close(index);
+                }
+            });
         });
 
         //提交选择国家事件
-        form.on('submit(*)', function (data) {
-            console.log(data);
-            let form = data.field;
-            updateAjax(form);
-        });
+
     })
 </script>
 </body>

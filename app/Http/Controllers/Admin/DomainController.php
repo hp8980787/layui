@@ -21,7 +21,7 @@ class DomainController extends Controller
         if ($request -> isMethod('POST')) {
             $page = $request -> page ?? 1;
             $perPage = $request -> perPage ?? 20;
-            $domains = QueryBuilder ::for(Domain ::query() -> with('country'))
+            $domains = QueryBuilder ::for(Domain ::query() -> with(['country','server']))
                 -> allowedSorts('expired_time')
                 -> allowedFilters([
                     AllowedFilter ::trashed(),

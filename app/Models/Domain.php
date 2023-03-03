@@ -29,4 +29,9 @@ class Domain extends Model
         return $this -> belongsTo(Country::class, 'country_id', 'id');
     }
 
+    public function server()
+    {
+        return $this -> belongsTo(Server::class, 'server_id', 'id');
+    }
+
 }
