@@ -133,7 +133,6 @@
                             time: 1000
                         }, function () {
                             parent.layer.close(parent.layer.getFrameIndex(window.name)); //关闭当前页
-                            table.reload('data-table');
                         });
                     } else {
                         layer.msg(result.msg, {

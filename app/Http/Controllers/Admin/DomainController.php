@@ -21,7 +21,7 @@ class DomainController extends Controller
         if ($request -> isMethod('POST')) {
             $page = $request -> page ?? 1;
             $perPage = $request -> perPage ?? 20;
-            $domains = QueryBuilder ::for(Domain ::query() -> with(['country','server']))
+            $domains = QueryBuilder ::for(Domain ::query() -> with(['country', 'server']))
                 -> allowedSorts('expired_time')
                 -> allowedFilters([
                     AllowedFilter ::trashed(),
@@ -62,12 +62,20 @@ class DomainController extends Controller
         return $this -> responseSuccess('', '检查任务已创建!');
     }
 
+    public function edit($id)
+    {
+        $domain = Domain ::query() -> with(['country', 'server']) -> findOrFail($id);
+        $countries = Country ::query() -> where('status', 1) -> get();
+        $servers = Server ::query() -> get();
+        return view('admin.domains.edit', compact('domain', 'countries','servers'));
+    }
+
     public function update(DomainRequest $request)
     {
         $id = $request -> id;
         $data = $request -> all();
         Domain ::query() -> where('id', $id) -> update($data);
-        return $this->responseSuccess('','修改');
+        return $this -> responseSuccess('', '修改成功');
     }
 
 }

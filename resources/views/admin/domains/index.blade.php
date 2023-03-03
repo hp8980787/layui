@@ -61,9 +61,10 @@
 {{--服务器选择--}}
 <script id="server-select" type="text/html">
     @{{# if(d.server_id){  }}
-       <span class="layui-badge layui-bg-green">@{{ d.server.name }}</span>
+    <span class="layui-badge layui-bg-green">@{{ d.server.name }}</span>
     @{{# }else{  }}
-    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="country-button" data-server-id="@{{ d.server_id }}" data-id="@{{ d.id }}" lay-filter="country-button">
+    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="country-button" data-server-id="@{{ d.server_id }}"
+            data-id="@{{ d.id }}" lay-filter="country-button">
         <i class="layui-icon layui-icon-search"></i>
     </button>
     @{{# }  }}
@@ -85,6 +86,7 @@
         </div>
     </form>
 </script>
+
 <script>
     layui.use(['jquery', 'table', 'form', 'common', 'button', 'popup', 'dropdown', 'laytpl'], function () {
         let $ = layui.jquery;
@@ -99,6 +101,8 @@
         let INDEX_URL = '{{ route('admin.domains.index') }}';
         let CHECK_URL = '{{ route('admin.domains.check') }}';
         let UPDATE_URL = '{{ route('admin.domains.update') }}';
+        let CREATE_URL = '{{ route('admin.domains.create') }}';
+
         let headers = {'X-CSRF-TOKEN': '{{ csrf_token() }}'}
 
         window.where = {
@@ -228,6 +232,14 @@
             }
         });
 
+        //table行内事件
+        table.on('tool(domain-table)', function (obj) {
+            switch (obj.event) {
+                case 'edit':
+                    edit(obj);
+                    break;
+            }
+        })
         //表格排序
         table.on('sort(domain-table)', function (obj) {
             let type = '';
@@ -245,6 +257,25 @@
         //新增域名
         let add = function () {
 
+        }
+
+        let edit = function (obj) {
+            openWinodw('修改', obj.data.editUrl);
+        }
+
+        let openWinodw = function (title, url) {
+            layer.open({
+                type: 2,
+                title: title,
+                shade: 0.1,
+                area: [common.isModile() ? '100%' : '500px', common.isModile() ? '100%' : '500px'],
+                content: url,
+                end: function (index, layera) {
+                    table.reload('domain-table', {
+                        where: window.where,
+                    })
+                }
+            });
         }
         //修改ajax
         let updateAjax = function (data) {
@@ -360,11 +391,18 @@
                     });
                     updateAjax(data);
                     layer.close(index);
+                    tableRefresh();
                 }
             });
         });
 
-        //提交选择国家事件
+        //table 刷新
+        let tableRefresh = function () {
+            table.reload('domain-table', {
+                where: window.where
+            });
+        }
+
 
     })
 </script>
