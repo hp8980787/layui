@@ -50,12 +50,24 @@
 <script id="domain-toolbar" type="text/html">
     <x-lay-button type="add"></x-lay-button>
     <x-lay-button type="" color="primary" text="检查网站" event="check" icon="layui-icon-find-fill" id="btn-check"></x-lay-button>
+    @if($deleteCount>0)
+        <x-lay-button color="primary" text="回收站" event="trash" icon="layui-icon-delete"></x-lay-button>
+        @{{# if(window.button){  }}
+        <x-lay-button color="primary" text="首页" event="home" icon="layui-icon-home"></x-lay-button>
+        @{{# }  }}
+    @endif
 </script>
 
 {{--表格内操作--}}
 <script id="domain-bar" type="text/html">
+    @{{# if(d.deleted_at){  }}
+    <x-lay-button color="danger" text="删除" size="sm" event="remove-real" icon="layui-icon-delete"></x-lay-button>
+    <x-lay-button color="primary" text="还原" size="sm" event="restore" icon="layui-icon-refresh-1"></x-lay-button>
+    @{{#  }else{ }}
     <x-lay-button type="edit"></x-lay-button>
     <x-lay-button type="remove"></x-lay-button>
+    @{{# }  }}
+
 </script>
 
 {{--服务器选择--}}
@@ -102,12 +114,14 @@
         let CHECK_URL = '{{ route('admin.domains.check') }}';
         let UPDATE_URL = '{{ route('admin.domains.update') }}';
         let CREATE_URL = '{{ route('admin.domains.create') }}';
+        let DELETE_URL = '{{ route('admin.domains.destroy') }}';
 
         let headers = {'X-CSRF-TOKEN': '{{ csrf_token() }}'}
 
         window.where = {
             select: 'one',
         };
+        window.button = false;
 
         let cols = [[
             {
@@ -115,7 +129,8 @@
             }, {
                 title: 'id',
                 field: 'id',
-                width: 40
+                width: 40,
+                hide: true,
             }, {
                 title: '过期天数',
                 templet: function (d) {
@@ -159,6 +174,7 @@
             }, {
                 title: 'name',
                 field: 'name',
+                hide: true,
             }, {
                 title: '网址',
                 field: 'url',
@@ -229,6 +245,14 @@
                 case 'add':
                     add();
                     break;
+                case 'trash':
+                    trash();
+                    break;
+                case 'home':
+                    window.where.filter['trashed'] = '';
+                    window.button = false;
+                    tableRefresh();
+                    break;
             }
         });
 
@@ -238,6 +262,16 @@
                 case 'edit':
                     edit(obj);
                     break;
+                case 'remove':
+                    remove(obj);
+                    break;
+                case 'restore':
+                    restore(obj);
+                    break;
+                case 'remove-real':
+                    remove(obj);
+                    break;
+
             }
         })
         //表格排序
@@ -256,12 +290,73 @@
 
         //新增域名
         let add = function () {
-
+            openWinodw('新增', CREATE_URL);
         }
 
         let edit = function (obj) {
             openWinodw('修改', obj.data.editUrl);
         }
+
+        //回收站
+        let trash = function () {
+            window.button = true;
+            window.where.filter = {trashed: 'only'}
+            tableRefresh();
+        }
+
+        let remove = function (obj) {
+            let msg, type = '';
+            if (obj.event === 'remove-real') {
+                msg = '会彻底删除数据且无法恢复'
+                type = 'real';
+            } else {
+                msg = '是否删除?';
+                type = '';
+            }
+
+
+            layer.confirm(msg, {
+                icon: 3,
+                title: '是否删除?'
+            }, function (index) {
+                let data = {id: obj.data.id,type:type};
+                ajax('delete', data, DELETE_URL);
+                layer.close(index);
+            });
+        }
+
+        let restore = function (obj) {
+            let data = {
+                id: obj.data.id
+            };
+            ajax('post', data, '{{ route('admin.domains.restore') }}')
+        }
+
+        let ajax = function (method, data, url) {
+            $.ajax({
+                url: url,
+                headers: headers,
+                method: method,
+                data: data,
+                success: function (res) {
+                    if (res.success) {
+                        layer.msg(res.msg, {
+                            icon: 1,
+                            time: 1000,
+                        }, function () {
+                            tableRefresh();
+                        })
+                    }
+                }, error: function (error) {
+                    layer.msg(error.responseText, {
+                        icon: 2,
+                        time: 2000,
+                    })
+                }
+            });
+            return false;
+        }
+
 
         let openWinodw = function (title, url) {
             layer.open({
@@ -277,24 +372,7 @@
                 }
             });
         }
-        //修改ajax
-        let updateAjax = function (data) {
-            $.ajax({
-                url: UPDATE_URL,
-                headers: headers,
-                method: 'put',
-                data: data,
-                success: function (res) {
-                    if (res.success) {
-                        layer.msg(res.msg, {
-                            icon: 1,
-                            time: 1000,
-                        })
-                    }
-                }
-            });
-            return false;
-        }
+
 
         //检查域名过期时间
         let check = function (type) {
@@ -389,7 +467,7 @@
                         data[v.name] = v.value;
                         return data;
                     });
-                    updateAjax(data);
+                    ajax('put', data, UPDATE_URL);
                     layer.close(index);
                     tableRefresh();
                 }

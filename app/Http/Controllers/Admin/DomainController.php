@@ -22,11 +22,12 @@ class DomainController extends Controller
             $page = $request -> page ?? 1;
             $perPage = $request -> perPage ?? 20;
             $domains = QueryBuilder ::for(Domain ::query() -> with(['country', 'server']))
-                -> allowedSorts('expired_time')
+                -> allowedSorts('id')
                 -> allowedFilters([
                     AllowedFilter ::trashed(),
                     'name',
-                    'url',
+                    AllowedFilter ::callback('url', fn(Builder $query, $value) => $query -> where('name', 'like', "%$value%")
+                        -> orWhere('url', 'like', "%$value%")),
                     AllowedFilter ::callback('country_id', fn(Builder $builder, $value) => $builder -> where('country_id', $value))
                 ])
                 -> paginate($perPage);
@@ -35,12 +36,23 @@ class DomainController extends Controller
 
         $countries = Country ::query() -> where('status', 1) -> get();
         $servers = Server ::query() -> get();
-        return view('admin.domains.index', compact('countries', 'servers'));
+        $deleteCount = Domain ::query() -> onlyTrashed() -> count();
+
+        return view('admin.domains.index', compact('countries', 'servers', 'deleteCount'));
     }
 
     public function create()
     {
-        return view('admin.domains.create');
+        $countries = Country ::query() -> where('status', 1) -> get();
+        $servers = Server ::query() -> get();
+        return view('admin.domains.create',compact('countries','servers'));
+    }
+
+    public function store(DomainRequest $request)
+    {
+        $data = $request -> all();
+        Domain ::query() -> create($data);
+        return $this -> responseSuccess('', '新增成功!');
     }
 
 
@@ -67,7 +79,7 @@ class DomainController extends Controller
         $domain = Domain ::query() -> with(['country', 'server']) -> findOrFail($id);
         $countries = Country ::query() -> where('status', 1) -> get();
         $servers = Server ::query() -> get();
-        return view('admin.domains.edit', compact('domain', 'countries','servers'));
+        return view('admin.domains.edit', compact('domain', 'countries', 'servers'));
     }
 
     public function update(DomainRequest $request)
@@ -76,6 +88,26 @@ class DomainController extends Controller
         $data = $request -> all();
         Domain ::query() -> where('id', $id) -> update($data);
         return $this -> responseSuccess('', '修改成功');
+    }
+
+    public function destroy(DomainRequest $request)
+    {
+        $id = $request -> id;
+        $type = $request -> type;
+        if ($type === 'real') {
+            Domain ::query() -> whereIn('id', is_array($id) ? $id : [$id]) -> forceDelete();
+        } else {
+            Domain ::query() -> whereIn('id', is_array($id) ? $id : [$id]) -> delete();
+        }
+
+        return $this -> responseSuccess('', '删除成功!');
+    }
+
+    public function restore(DomainRequest $request)
+    {
+        $id = $request -> id;
+        Domain ::withTrashed() -> whereIn('id', is_array($id) ? $id : [$id]) -> restore();
+        return $this -> responseSuccess('', '恢复成功');
     }
 
 }

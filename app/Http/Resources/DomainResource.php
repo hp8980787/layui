@@ -34,7 +34,8 @@ class DomainResource extends JsonResource
             }),
             'expired_status' => Domain::STATUS_EXPIRED_GROUP[$this -> expired_status],
             'http_status' => Domain::STATUS_HTTP_GROUP[$this -> http_status],
-            'editUrl'=>route('admin.domains.edit',[$this->id])
+            'editUrl'=>route('admin.domains.edit',[$this->id]),
+            'deleted_at'=>$this->deleted_at,
         ];
     }
 }

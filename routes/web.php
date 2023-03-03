@@ -79,6 +79,9 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
             Route ::get('/create', [C\DomainController::class, 'create']) -> name('create');
             Route ::put('/update', [C\DomainController::class, 'update']) -> name('update');
             Route ::get('/{id}/edit', [C\DomainController::class, 'edit']) -> name('edit');
+            Route ::delete('/delete', [C\DomainController::class, 'destroy']) -> name('destroy');
+            Route ::post('restore', [C\DomainController::class, 'restore']) -> name('restore');
+            Route ::post('store', [C\DomainController::class, 'store']) -> name('store');
         });
 
         Route ::name('servers.') -> prefix('servers') -> group(function () {
@@ -87,6 +90,7 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
             Route ::post('store', [C\ServerController::class, 'store']) -> name('store');
             Route ::get('{id}/edit', [C\ServerController::class, 'edit']) -> name('edit');
             Route ::put('update', [C\ServerController::class, 'update']) -> name('update');
+
         });
 
         Route ::name('countries.') -> prefix('countries') -> group(function () {

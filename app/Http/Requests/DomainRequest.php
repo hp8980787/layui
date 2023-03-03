@@ -23,7 +23,16 @@ class DomainRequest extends FormRequest
      */
     public function rules()
     {
+        $action = explode('@', $this -> route() -> getActionName())[1];
 
+        if ($action === 'store') {
+            return [
+                'server_id' => 'required',
+                'country_id' => 'required',
+                'name' => 'required',
+                'url' => 'required|url',
+            ];
+        }
         return [
             //
         ];
