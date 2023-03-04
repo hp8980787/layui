@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\DomainRequest;
 use App\Http\Resources\DomainResource;
 use App\Jobs\CheckDomainsExpired;
+use App\Jobs\CheckDomainStatus;
+use App\Jobs\DownloadSitemap;
 use App\Models\Country;
 use App\Models\Domain;
 use App\Models\Server;
@@ -37,7 +39,7 @@ class DomainController extends Controller
         $countries = Country ::query() -> where('status', 1) -> get();
         $servers = Server ::query() -> get();
         $deleteCount = Domain ::query() -> onlyTrashed() -> count();
-
+        CheckDomainStatus::dispatch(Domain::query()->get());
         return view('admin.domains.index', compact('countries', 'servers', 'deleteCount'));
     }
 
