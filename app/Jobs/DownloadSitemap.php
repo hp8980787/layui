@@ -37,18 +37,23 @@ class DownloadSitemap implements ShouldQueue
         $sitemapName = '/sitemap.xml';
         foreach ($this -> domains as $domain) {
             $path = storage_path('app/sitemap/' . $domain -> name . '/sitemap.xml');
-//            $path = $document . $sitemapName;
-            $url = $domain -> url . '/sitemap.xml';
+            $url = (substr($domain -> url,-1,1)==='/'?$domain->url:$domain->url.'/').'sitemap.xml' ;
+            $document = storage_path('app/sitemap/' . $domain -> name);
+
+            if (!is_dir($document)) {
+                mkdir($document);
+            }
+
             if (!file_exists($path)) {
                 $this -> download($url, $path);
             } else {
                 $xml = simplexml_load_file($path);
-                if ($xml->count()<20){
+                if ($xml -> count() < 20) {
                     foreach ($xml -> children() as $value) {
                         $url = $value -> loc -> __toString();
                         $name = substr($url, strripos($url, '/') + 1);
                         $path = storage_path('app/sitemap/' . $domain -> name . '/' . $name);
-                        if (!file_exists($path)){
+                        if (!file_exists($path)) {
                             $this -> download($url, $path);
                         }
                     }

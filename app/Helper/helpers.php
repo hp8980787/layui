@@ -25,10 +25,14 @@ if (!function_exists('downloadFile')) {
     {
         set_time_limit(0);
         $fp = fopen ($path, 'w+');
-        $ch = curl_init(str_replace(" ","%20",$url));
-        curl_setopt($ch, CURLOPT_TIMEOUT, 600);
-        curl_setopt($ch, CURLOPT_FILE, $fp);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_TIMEOUT,9999999);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        //重定向跟踪
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
         curl_exec($ch);
         curl_close($ch);
         fclose($fp);

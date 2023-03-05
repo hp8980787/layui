@@ -39,7 +39,8 @@ class DomainController extends Controller
         $countries = Country ::query() -> where('status', 1) -> get();
         $servers = Server ::query() -> get();
         $deleteCount = Domain ::query() -> onlyTrashed() -> count();
-        CheckDomainStatus::dispatch(Domain::query()->get());
+        $domains = Domain::query()->get();
+
         return view('admin.domains.index', compact('countries', 'servers', 'deleteCount'));
     }
 
