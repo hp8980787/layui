@@ -24,7 +24,7 @@ class DomainController extends Controller
             $page = $request -> page ?? 1;
             $perPage = $request -> perPage ?? 20;
             $domains = QueryBuilder ::for(Domain ::query() -> with(['country', 'server']))
-                -> allowedSorts('id')
+                -> allowedSorts('id','expired_time')
                 -> allowedFilters([
                     AllowedFilter ::trashed(),
                     'name',
@@ -39,8 +39,14 @@ class DomainController extends Controller
         $countries = Country ::query() -> where('status', 1) -> get();
         $servers = Server ::query() -> get();
         $deleteCount = Domain ::query() -> onlyTrashed() -> count();
-        $domains = Domain::query()->get();
-
+//        $domains = Domain ::query() -> get();
+//
+//        $domain1 = $domains -> slice(0, 20);
+//        $domain2 = $domains -> slice(20, 40);
+//        $domain3 = $domains->slice(40,$domains->count());
+//        CheckDomainStatus ::dispatch($domain1) -> onQueue('default');
+//        CheckDomainStatus ::dispatch($domain2) -> onQueue('default');
+//        CheckDomainStatus ::dispatch($domain3) -> onQueue('default');
         return view('admin.domains.index', compact('countries', 'servers', 'deleteCount'));
     }
 
@@ -48,7 +54,7 @@ class DomainController extends Controller
     {
         $countries = Country ::query() -> where('status', 1) -> get();
         $servers = Server ::query() -> get();
-        return view('admin.domains.create',compact('countries','servers'));
+        return view('admin.domains.create', compact('countries', 'servers'));
     }
 
     public function store(DomainRequest $request)
