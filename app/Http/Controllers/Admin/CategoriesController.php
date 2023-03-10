@@ -35,6 +35,17 @@ class CategoriesController extends Controller
         $id = $request -> id;
         $data = $request -> all();
         Category ::query() -> where('id', $id) -> update($data);
-        return $this->responseSuccess('','修改成功!');
+        return $this -> responseSuccess('', '修改成功!');
+    }
+
+    public function create()
+    {
+        return view('admin.categories.create');
+    }
+
+    public function store(CategoryRequest $request)
+    {
+        Category::query()->create($request->all());
+        return $this->responseSuccess('','添加成功!');
     }
 }

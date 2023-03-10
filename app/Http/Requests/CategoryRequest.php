@@ -23,8 +23,13 @@ class CategoryRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $action = explode('@', $this -> route() -> getActionName())[1];
+
+        return match ($action) {
+            'store' => [
+                'category'=>'required|max:30|min:3'
+            ],
+            default=>[],
+        };
     }
 }

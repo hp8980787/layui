@@ -9,7 +9,9 @@
 </div>
 @include('admin.layouts.__footer');
 
-<script id="table-toolbar" type="text/html"></script>
+<script id="table-toolbar" type="text/html">
+    <x-lay-button type="add"></x-lay-button>
+</script>
 <script id="table-bar" type="text/html">
     <x-lay-button type="edit"></x-lay-button>
 </script>
@@ -21,6 +23,7 @@
         let headers = {'X-CSRF-TOKEN': '{{ csrf_token() }}'}
 
         let INDEX_PATH = '{{ route('admin.categories.index') }}';
+        let CREATE_PATH = '{{ route('admin.categories.create') }}';
 
         window.where = {};
         let cols = [[
@@ -61,6 +64,7 @@
                 toolbar: '#table-bar'
             }
         ]];
+
         table.render({
             elem: '#category-table',
             url: INDEX_PATH,
@@ -76,6 +80,13 @@
             cols: cols,
             skin: 'line',
             toolbar: '#table-toolbar'
+        });
+        table.on('toolbar(category-table)', function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    add();
+                    break;
+            }
         });
         table.on('tool(category-table)', function (obj) {
             switch (obj.event) {
@@ -93,6 +104,19 @@
                 shade: 0.1,
                 area: [common.isModile() ? '100%' : '500px', common.isModile() ? '100%' : '500px'],
                 content: obj.data.editUrl,
+                end: function () {
+                    window.refresh();
+                }
+            })
+        };
+
+        let add = function (obj) {
+            layer.open({
+                type: 2,
+                title: '编辑',
+                shade: 0.1,
+                area: [common.isModile() ? '100%' : '500px', common.isModile() ? '100%' : '500px'],
+                content: CREATE_PATH,
                 end: function () {
                     window.refresh();
                 }
