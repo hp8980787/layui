@@ -107,6 +107,7 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
         Route ::put('update', [C\CategoriesController::class, 'update']) -> name('update');
         Route ::get('create', [C\CategoriesController::class, 'create']) -> name('create');
         Route ::post('store', [C\CategoriesController::class, 'store']) -> name('store');
+        Route ::delete('/delete', [C\CategoriesController::class, 'destroy']) -> name('destroy');
     });
 
 });

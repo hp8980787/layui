@@ -45,7 +45,14 @@ class CategoriesController extends Controller
 
     public function store(CategoryRequest $request)
     {
-        Category::query()->create($request->all());
-        return $this->responseSuccess('','添加成功!');
+        Category ::query() -> create($request -> all());
+        return $this -> responseSuccess('', '添加成功!');
+    }
+
+    public function destroy(CategoryRequest $request)
+    {
+        $id = $request -> id;
+        Category ::query() -> whereIn('id', is_array($id) ? $id : [$id]) -> delete();
+        return $this -> responseSuccess('', '删除成功!');
     }
 }

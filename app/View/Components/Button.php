@@ -49,12 +49,13 @@ class Button extends Component
 
     public function __construct($type = '', $color = '', $event = '', $size = '', $icon = '', $text = '', $id = '')
     {
+
         $this -> type = $type;
         $this -> size = $size ?: 'sm';
         $this -> color = $color ?: (self::COLOR_GROUP[$this -> type] ?? 'primary');
         $this -> icon = $icon ?: self::ICON_GROUP[$this -> type] ?? 'layui-icon-add';
         $this -> event = $event ?: self::EVENT_GROUP[$this -> type] ?? 'add';
-        $this -> text = $text ?: self::TEXT_GROUP[$this -> type] ?? '新增';
+        $this -> text = $text=='false' ?'': self::TEXT_GROUP[$this -> type] ?? '新增';
         $this -> id = $id ;
     }
 
