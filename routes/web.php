@@ -109,6 +109,7 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
 
     Route ::name('databases.') -> prefix('databases') -> group(function () {
         Route ::any('/', [C\DatabasesController::class, 'index']) -> name('index');
+        Route ::any('create', [C\DatabasesController::class, 'create']) -> name('create');
     });
 
 });

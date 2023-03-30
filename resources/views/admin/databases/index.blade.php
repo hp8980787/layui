@@ -10,7 +10,7 @@
 
 @include('admin.layouts.__footer')
 <script id="table-toolbar" type="text/html">
-<x-lay-button type="add"></x-lay-button>
+    <x-lay-button type="add"></x-lay-button>
 </script>
 <script>
     layui.use(['table', 'form', 'common', 'jquery'], function () {
@@ -19,6 +19,7 @@
         const common = layui.common;
         let headers = {'X-CSRF-TOKEN': '{{ csrf_token() }}'};
         let INDEX_PATH = '{{ route('admin.databases.index') }}';
+        let CREATE_PATH = '{{ route('admin.databases.create') }}';
         window.where = {}
 
         let cols = [[
@@ -62,10 +63,27 @@
             where: window.where,
             cols: cols,
             skin: 'line',
-            toolbar:'#table-toolbar'
+            toolbar: '#table-toolbar'
         })
 
+        table.on('toolbar(database-table)', function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    add()
+                    break;
+            }
+        });
+        let add = function () {
+            layer.open({
+                type: 2,
+                title:'新增',
+                shadow: 0.1,
+                area: [common.isModile() ? '100%' : '400px', common.isModile() ? '100%' : '500px'],
+                content: CREATE_PATH,
+            })
+        }
     });
+
 </script>
 </body>
 </html>
