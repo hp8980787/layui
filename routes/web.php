@@ -104,7 +104,11 @@ Route ::prefix('admin') -> as('admin.') -> middleware(['admin.locale']) -> group
     Route ::name('categories.') -> prefix('categories') -> group(function () {
         Route ::any('/', [C\CategoriesController::class, 'index']) -> name('index');
         Route ::any('/{id}/edit', [C\CategoriesController::class, 'edit']) -> name('edit');
-        Route::put('update',[C\CategoriesController::class,'update'])->name('update');
+        Route ::put('update', [C\CategoriesController::class, 'update']) -> name('update');
+    });
+
+    Route ::name('databases.') -> prefix('databases') -> group(function () {
+        Route ::any('/', [C\DatabasesController::class, 'index']) -> name('index');
     });
 
 });
