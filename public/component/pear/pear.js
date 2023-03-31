@@ -46,6 +46,7 @@ layui.config({
 	fullscreen:"fullscreen",  //全屏组件
 	popover:"popover/popover", //汽泡组件
     fileManager:"fileManager",//文件管理器
+    layselect:"layselect",//下拉框增强
 }).use(['layer', 'theme'], function () {
 	layui.theme.changeTheme(window, false);
 });
