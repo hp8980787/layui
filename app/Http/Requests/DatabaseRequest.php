@@ -23,6 +23,18 @@ class DatabaseRequest extends FormRequest
      */
     public function rules()
     {
+        $action = explode('@', $this -> route() -> getActionName())[1];
+        switch ($action) {
+            case 'store':
+                return [
+                    'host' => 'required|ip',
+                    'port' => 'required',
+                    'database' => 'required',
+                    'username' => 'required',
+                    'password' => 'required',
+                ];
+        }
+
         return [
             //
         ];

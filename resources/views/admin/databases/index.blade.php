@@ -76,10 +76,19 @@
         let add = function () {
             layer.open({
                 type: 2,
-                title:'新增',
+                title: '新增',
                 shadow: 0.1,
-                area: [common.isModile() ? '100%' : '400px', common.isModile() ? '100%' : '500px'],
+                area: [common.isModile() ? '100%' : '400px', common.isModile() ? '100%' : '600px'],
                 content: CREATE_PATH,
+                end: function () {
+                    window.refresh();
+                }
+            })
+        }
+
+        window.refersh = function () {
+            table.reload('database-table', {
+                where: window.where,
             })
         }
     });

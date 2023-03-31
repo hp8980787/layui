@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\DatabaseRequest;
 use App\Http\Resources\DatabaseResource;
 use App\Models\Database;
+use App\Models\Domain;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -21,7 +22,7 @@ class DatabasesController extends Controller
         if ($request -> isMethod('POST')) {
             $perPage = $request -> perPage ?? 20;
             $data = QueryBuilder ::for(Database ::query()) -> paginate($perPage);
-            return $this -> responseSuccess(DatabaseResource::forCollection($data));
+            return $this -> responseSuccess(DatabaseResource ::forCollection($data));
 
         }
         return view('admin.databases.index');
@@ -34,6 +35,7 @@ class DatabasesController extends Controller
      */
     public function create()
     {
+
         return view('admin.databases.create');
     }
 
@@ -96,5 +98,11 @@ class DatabasesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function domains(DatabaseRequest $request)
+    {
+        $domains = Domain ::query()->with('server') -> get();
+        return $domains;
     }
 }
